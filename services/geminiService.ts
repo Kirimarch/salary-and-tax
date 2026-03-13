@@ -30,16 +30,14 @@ export const getFinancialAdvice = async (
   `;
 
   try {
-    // ใช้คำสั่งมาตรฐานเพื่อเชื่อมต่อกับโมเดล
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const chatSession = model.startChat();
-    const response = await chatSession.sendMessage(prompt);
+    // เปลี่ยนมาใช้ gemini-pro ซึ่งเป็นรุ่นมาตรฐานที่สุด (ชัวร์กว่า)
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const response = await model.generateContent(prompt);
     const text = response.response.text();
     
     return text || "ขออภัย ไม่สามารถดึงข้อมูลคำแนะนำได้ในขณะนี้";
   } catch (error: any) {
     console.error("Gemini Error:", error);
-    // ถ้ายังเจอ 404 อีก ให้ลองรุ่นมาตรฐาน
     return `เกิดข้อผิดพลาด: ${error?.message || "ติดต่อ AI ไม่ได้"}`;
   }
 };
