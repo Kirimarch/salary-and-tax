@@ -16,19 +16,19 @@ const IncomeForm: React.FC<IncomeFormProps> = ({
 }) => {
   return (
     <section className="bg-white rounded-2xl shadow-sm border p-6">
-      <h2 className="text-sm font-bold text-indigo-600 mb-6 flex items-center gap-2 uppercase tracking-tight">
-        <i className="fas fa-coins"></i> ข้อมูลรายได้
+      <h2 className="text-xs font-black text-slate-400 mb-6 flex items-center gap-2 uppercase tracking-[0.2em] border-b border-slate-100 pb-3">
+        <i className="fas fa-money-check-alt text-indigo-500"></i> ข้อมูลรายได้ (Income)
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
         <div className="sm:col-span-2">
           <NumericInput
-            label="เงินเดือน (Base Salary)"
+            label="เงินเดือนพื้นฐาน (Base Salary)"
             name="baseSalary"
             value={income.baseSalary}
             onChange={handleIncomeChange}
             placeholder="เช่น 27000"
             labelClass={labelClass}
-            className="w-full px-4 py-3 bg-indigo-50/30 border border-indigo-100 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none text-xl md:text-2xl font-black text-indigo-900 transition-all"
+            className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-[1.25rem] focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white outline-none text-2xl md:text-3xl font-black text-slate-900 transition-all placeholder:text-slate-200"
           />
         </div>
         
@@ -40,7 +40,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({
             onChange={handleIncomeChange}
             placeholder="ระบุจำนวนวัน"
             labelClass={labelClass}
-            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none font-bold transition-all"
+            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white outline-none font-bold transition-all"
             suffix="วัน"
             max={31}
           />
@@ -54,7 +54,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({
             onChange={handleIncomeChange}
             placeholder="0"
             labelClass={labelClass}
-            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none font-bold transition-all text-green-600"
+            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white outline-none font-bold transition-all text-emerald-600"
           />
         </div>
 
@@ -66,7 +66,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({
             onChange={handleIncomeChange}
             placeholder="0"
             labelClass={labelClass}
-            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none font-bold transition-all text-green-600"
+            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white outline-none font-bold transition-all text-emerald-600"
           />
         </div>
 
@@ -78,14 +78,14 @@ const IncomeForm: React.FC<IncomeFormProps> = ({
             onChange={handleIncomeChange}
             placeholder="0"
             labelClass={labelClass}
-            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none font-bold transition-all text-blue-600"
+            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white outline-none font-bold transition-all text-sky-600"
           />
         </div>
 
-        <div className="col-span-1 sm:col-span-2 mt-2 py-3 px-4 bg-indigo-50/50 rounded-xl border border-indigo-100/50">
-          <p className="text-[10px] text-indigo-500 leading-relaxed font-medium">
-            <i className="fas fa-info-circle mr-1"></i>
-            ระบบจะคำนวณวันขาดงานอัตโนมัติหากวันมาทำงานจริงไม่ครบ 26 วันตามมาตรฐาน
+        <div className="col-span-1 sm:col-span-2 mt-2 py-3.5 px-5 bg-indigo-50/40 rounded-[1.25rem] border border-indigo-100/30">
+          <p className="text-[10px] text-indigo-400 leading-relaxed font-bold uppercase tracking-wider flex items-center gap-2">
+            <i className="fas fa-info-circle text-indigo-500 opacity-60"></i>
+            คำนวณวันขาดงานอัตโนมัติอ้างอิงฐาน 26 วัน
           </p>
         </div>
       </div>

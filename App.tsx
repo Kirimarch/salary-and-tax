@@ -16,6 +16,10 @@ import ResultsPanel from './components/ResultsPanel';
 import SalarySlipPDF from './components/SalarySlipPDF';
 import AIAdvisor from './components/AIAdvisor';
 
+// Assets
+// @ts-ignore
+import logo from './components/images/AW-EnterPriseNetwork-logo.png';
+
 const initialIncome: IncomeData = {
   baseSalary: 0,
   positionAllowance: 0,
@@ -119,16 +123,14 @@ const App: React.FC = () => {
   const labelClass = "text-[11px] text-slate-400 font-bold uppercase block mb-1.5 ml-1";
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-12 font-['Kanit']">
-      <header className="bg-white border-b border-slate-200 py-4 md:py-6 mb-6 md:mb-8 sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-3 self-start sm:self-auto">
-            <div className="bg-indigo-600 p-2 rounded-lg text-white shadow-lg shadow-indigo-200 shrink-0">
-              <i className="fas fa-file-invoice-dollar text-xl md:text-2xl"></i>
-            </div>
-            <div>
-              <h1 className="text-lg md:text-xl font-bold text-slate-800 leading-tight">ENT Payroll System</h1>
-              <p className="text-slate-400 text-[9px] md:text-[10px] uppercase tracking-widest font-bold">Smart Management</p>
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 pb-12 font-['Kanit'] selection:bg-indigo-100 selection:text-indigo-900">
+      <header className="bg-white border-b border-slate-200 py-2 md:py-3 mb-6 md:mb-8 sticky top-0 z-50 shadow-sm">
+        <div className="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+          <div className="flex items-center gap-4">
+            <img src={logo} alt="ENT Logo" className="h-14 md:h-16 w-auto object-contain" />
+            <div className="border-l-2 border-slate-200 pl-4 py-1">
+              <h1 className="text-lg md:text-2xl font-black text-slate-800 leading-tight tracking-tight">ระบบจัดการเงินเดือน</h1>
+              <p className="text-slate-400 text-[10px] md:text-[11px] uppercase tracking-[0.3em] font-bold">Smart Management System</p>
             </div>
           </div>
 
@@ -155,7 +157,7 @@ const App: React.FC = () => {
                     className="w-full sm:w-auto min-w-[100px] md:min-w-[120px] bg-indigo-600 hover:bg-indigo-700 text-white px-3 md:px-5 py-2 md:py-2.5 rounded-xl md:rounded-2xl text-[11px] md:text-xs font-black uppercase flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-100 active:scale-95 group disabled:opacity-50 whitespace-nowrap"
                   >
                     <i className="fas fa-file-pdf group-hover:rotate-12 transition-transform"></i>
-                    {loading ? '...' : 'PDF Slip'}
+                    {loading ? '...' : 'พิมพ์ใบแจ้งเงินเดือน'}
                   </button>
                 )}
               </PDFDownloadLink>
@@ -165,7 +167,7 @@ const App: React.FC = () => {
                 className="flex-1 sm:flex-none w-full sm:w-auto min-w-[100px] md:min-w-[120px] bg-emerald-600 hover:bg-emerald-700 text-white px-3 md:px-5 py-2 md:py-2.5 rounded-xl md:rounded-2xl text-[11px] md:text-xs font-black uppercase flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-100 active:scale-95 group whitespace-nowrap"
               >
                 <i className="fas fa-file-excel group-hover:rotate-12 transition-transform"></i>
-                Excel Report
+                ส่งออกรายงาน Excel
               </button>
             </div>
           )}
@@ -220,7 +222,7 @@ const App: React.FC = () => {
       </main>
 
       <footer className="container mx-auto px-4 mt-12 py-8 border-t border-slate-200 text-center space-y-3">
-        <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">© 2025 Professional Salary & Tax Master</p>
+        <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">© 2025 ระบบคำนวณเงินเดือนและภาษีมืออาชีพ</p>
         <p className="text-slate-300 text-[9px] max-w-xl mx-auto italic font-medium">
           หมายเหตุ: การคำนวณวันขาดงานอัตโนมัติอ้างอิงจากฐาน 26 วันต่อเดือนตามมาตรฐานสากล ผลลัพธ์อาจแตกต่างกันไปตามนโยบายบริษัท
         </p>

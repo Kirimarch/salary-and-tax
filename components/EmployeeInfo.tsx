@@ -19,9 +19,9 @@ const EmployeeInfo: React.FC<EmployeeInfoProps> = ({
   labelClass
 }) => {
   return (
-    <section className="bg-white rounded-2xl shadow-sm border p-6 border-indigo-100 ring-4 ring-indigo-50/50">
-      <h2 className="text-sm font-bold text-indigo-900 mb-6 flex items-center gap-2 uppercase tracking-tight">
-        <i className="fas fa-id-card text-indigo-500"></i> ข้อมูลพนักงาน
+    <section className="bg-white rounded-2xl shadow-sm border p-6">
+      <h2 className="text-xs font-black text-slate-400 mb-6 flex items-center gap-2 uppercase tracking-[0.2em] border-b border-slate-100 pb-3">
+        <i className="fas fa-id-card-alt text-indigo-500"></i> ข้อมูลพนักงาน (Employee Detail)
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
@@ -29,9 +29,9 @@ const EmployeeInfo: React.FC<EmployeeInfoProps> = ({
           <input 
             type="text" 
             value={employeeId} 
-            placeholder="เช่น EMP-001" 
+            placeholder="เช่น T-100" 
             onChange={(e) => setEmployeeId(e.target.value)} 
-            className={inputClass} 
+            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white outline-none font-bold transition-all placeholder:text-slate-200"
           />
         </div>
         <div>
@@ -39,9 +39,9 @@ const EmployeeInfo: React.FC<EmployeeInfoProps> = ({
           <input 
             type="text" 
             value={employeeName} 
-            placeholder="กรุณาระบุชื่อ" 
+            placeholder="ระบุชื่อพนักงาน" 
             onChange={(e) => setEmployeeName(e.target.value)} 
-            className={inputClass} 
+            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white outline-none font-bold transition-all placeholder:text-slate-200"
           />
         </div>
       </div>

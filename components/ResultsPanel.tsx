@@ -39,34 +39,49 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
     <div className="xl:col-span-7 space-y-6">
       
       {/* Main Net Dashboard */}
-      <div className="bg-indigo-900 rounded-[1.5rem] md:rounded-[2rem] shadow-2xl p-6 md:p-8 text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
-        <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 md:gap-8">
-          <div className="space-y-2 flex-1 w-full">
-            <div className="flex flex-col gap-1 mb-3 md:mb-4">
-               <p className="text-indigo-200 text-xs md:text-sm font-bold truncate max-w-full">
-                 {employeeName || "ชื่อพนักงาน"} {employeeId && `[${employeeId}]`}
-               </p>
-               <p className="text-indigo-400 text-[9px] md:text-[10px] font-black uppercase tracking-widest">เงินเดือนสุทธิที่คุณจะได้รับ</p>
+      <div className="bg-gradient-to-br from-slate-900 via-[#1E293B] to-slate-900 rounded-[2rem] shadow-2xl p-7 md:p-10 text-white relative overflow-hidden border border-white/5">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full -mr-32 -mt-32 blur-[100px]"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/5 rounded-full -ml-20 -mb-20 blur-[80px]"></div>
+        
+        <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
+          <div className="space-y-4 flex-1 w-full">
+            <div className="space-y-1">
+               <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">สรุปรายรับสุทธิ (Net Pay)</p>
+               <h2 className="text-white/90 text-sm md:text-base font-bold flex items-center gap-2">
+                 <i className="fas fa-user-circle text-indigo-400 opacity-70"></i>
+                 {employeeName || "ข้อมูลพนักงานทั่วไป"} {employeeId && <span className="text-slate-500 text-xs font-medium">#{employeeId}</span>}
+               </h2>
             </div>
-            <h3 className="text-4xl xs:text-5xl md:text-6xl font-black truncate leading-none">
-              {hasInput ? formatCurrency(result.monthlyNet) : formatCurrency(0)}
-            </h3>
-            <div className="flex flex-wrap gap-2 md:gap-3 pt-3 md:pt-4">
-               <div className="bg-white/10 px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-bold backdrop-blur-md italic">
+            
+            <div className="py-2">
+              <p className="text-indigo-300/60 text-[10px] font-bold uppercase mb-1">ยอดเงินเดือนสุทธิที่ได้รับ</p>
+              <h3 className="text-5xl md:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">
+                {hasInput ? formatCurrency(result.monthlyNet) : formatCurrency(0)}
+              </h3>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+               <div className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-[10px] font-bold backdrop-blur-md flex items-center gap-2">
+                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
                  หักประกันสังคม {formatCurrency(result.monthlySSO)}
                </div>
-               <div className="bg-white/10 px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-bold backdrop-blur-md italic">
-                 ภาษี {formatCurrency(result.monthlyTax)}
+               <div className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-[10px] font-bold backdrop-blur-md flex items-center gap-2">
+                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                 หักภาษี {formatCurrency(result.monthlyTax)}
                </div>
             </div>
           </div>
-          <div className="bg-white text-indigo-900 p-5 md:p-6 rounded-[1.25rem] md:rounded-[1.5rem] shadow-xl w-full sm:w-auto text-center sm:text-left min-w-[160px] md:min-w-[200px]">
-            <p className="text-[9px] md:text-[10px] font-bold text-indigo-400 uppercase mb-1">รายได้ต่อวัน (Avg.)</p>
-            <p className="text-xl md:text-2xl font-black">{hasInput ? formatCurrency(result.dailyRate) : formatCurrency(0)}</p>
-            <div className="mt-2 md:mt-3 pt-2 md:pt-3 border-t border-indigo-50">
-              <p className="text-[9px] md:text-[10px] font-bold text-indigo-400 uppercase mb-1">หักรายนาที</p>
-              <p className="text-base md:text-lg font-bold">฿{hasInput ? result.minuteRate.toFixed(2) : "0.00"}</p>
+
+          <div className="bg-white/[0.03] border border-white/10 backdrop-blur-xl p-6 md:p-8 rounded-[2rem] w-full lg:w-auto min-w-[240px] shadow-inner">
+            <div className="space-y-6">
+              <div>
+                <p className="text-[12px] font-black text-slate-500 uppercase tracking-widest mb-1">รายได้เฉลี่ยต่อวัน</p>
+                <p className="text-2xl md:text-3xl font-black text-white">{hasInput ? formatCurrency(result.dailyRate) : formatCurrency(0)}</p>
+              </div>
+              <div className="pt-5 border-t border-white/5">
+                <p className="text-[12px] font-black text-slate-500 uppercase tracking-widest mb-1">ฐานหักรายนาที</p>
+                <p className="text-lg md:text-xl font-bold text-indigo-300">฿{hasInput ? result.minuteRate.toFixed(2) : "0.00"}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -76,7 +91,7 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
       <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
          <div className="p-4 bg-slate-50 border-b flex justify-between items-center">
            <h3 className="text-[10px] md:text-xs font-black text-slate-500 uppercase">รายละเอียดสรุปยอด</h3>
-           <span className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-wider">Payroll Data</span>
+           <span className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-wider">ข้อมูลเงินเดือน (Payroll)</span>
          </div>
          <div className="overflow-x-auto">
            <table className="w-full text-[13px] md:text-sm">

@@ -1,7 +1,11 @@
 
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Font, Image } from '@react-pdf/renderer';
 import { CalculationResult, IncomeData, AttendanceData, DeductionData } from '../types';
+
+// Assets
+// @ts-ignore
+import logo from './images/AW-EnterPriseNetwork-logo.png';
 
 // Register Thai Font (Kanit) from Google Fonts storage
 Font.register({
@@ -22,13 +26,24 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: 20,
     borderBottom: 2,
-    borderBottomColor: '#6366f1',
-    paddingBottom: 10,
+    borderBottomColor: '#1e1b4b',
+    paddingBottom: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  logo: {
+    width: 60,
+    height: 'auto',
+  },
+  companyInfo: {
+    textAlign: 'right',
   },
   companyName: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#1e1b4b',
+    textTransform: 'uppercase',
   },
   employeeInfo: {
     marginTop: 10,
@@ -121,9 +136,12 @@ export const SalarySlipPDF: React.FC<Props> = ({ result, income, attendance, ded
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.companyName}>Enterprise Network Technology.co ltd</Text>
-          <Text style={{ fontSize: 9, color: '#64748b' }}>ใบแจ้งยอดเงินเดือน (PAYSLIP)</Text>
-          <Text style={{ fontSize: 9, marginTop: 4 }}>วันที่พิมพ์: {date}</Text>
+          <Image src={logo} style={styles.logo} />
+          <View style={styles.companyInfo}>
+            <Text style={styles.companyName}>Enterprise Network Technology.co ltd</Text>
+            <Text style={{ fontSize: 9, color: '#64748b' }}>ใบแจ้งยอดเงินเดือน (PAYSLIP)</Text>
+            <Text style={{ fontSize: 8, marginTop: 4 }}>วันที่พิมพ์: {date}</Text>
+          </View>
         </View>
 
         {/* Employee Detail Box */}
