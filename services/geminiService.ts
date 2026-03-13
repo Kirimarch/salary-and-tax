@@ -5,68 +5,53 @@ export const getFinancialAdvice = async (
   income: IncomeData,
   deduction: DeductionData
 ): Promise<string> => {
+  // ดึงรหัสผ่านทางที่มาตรฐานที่สุดของ Vite
   // @ts-ignore
-  const apiKey = (typeof process !== 'undefined' && process.env?.API_KEY) || import.meta.env.VITE_GEMINI_API_KEY;
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   
-  if (!apiKey || apiKey === "undefined") {
-    return "กรุณาตั้งค่า API Key ในไฟล์ .env และ Restart ระบบ";
+  if (!apiKey || apiKey === "undefined" || apiKey === "") {
+    return "โปรแกรมหา API Key ไม่เจอ (กรุณาตรวจสอบหน้า Variables ใน Railway ว่าพิมพ์ชื่อ VITE_GEMINI_API_KEY ถูกต้อง และลองกด Redeploy อีกครั้งครับ)";
   }
 
   const prompt = `
     ในฐานะที่ปรึกษาทางการเงินมืออาชีพ ช่วยวิเคราะห์สถานะทางการเงินของผู้ใช้คนนี้:
     - รายรับต่อเดือน (ก่อนหักภาษี/ประกันสังคม): ${result.monthlyGrossAfterDeductions} บาท
     - รายรับต่อปีรวมโบนัส: ${result.yearlyGross} บาท
-    - ภาษีที่ต้องจ่ายต่อปี: ${result.yearlyTax} บาท (ฐานภาษีสูงสุด: ${result.taxBracket})
-    - ประกันสังคมต่อเดือน: ${result.monthlySSO} บาท
-    - กองทุนสำรองเลี้ยงชีพ: ${result.monthlyProvidentFund} บาท (${deduction.providentFundRate}%)
-    - เงินเดือนสุทธิหลังหักภาษีและอื่นๆ: ${result.monthlyNet} บาท
+    - ภาษีที่ต้องจ่ายต่อปี: ${result.yearlyTax} บาท
+    - เงินเดือนสุทธิหลังหักภาษี: ${result.monthlyNet} บาท
 
-    กรุณาให้คำแนะนำสั้นๆ 3-4 ข้อ เป็นภาษาไทย เกี่ยวกับ:
-    1. การวางแผนภาษี (เช่น การลดหย่อนเพิ่มเติมผ่าน SSF, RMF หรือประกัน)
-    2. การออมและการลงทุนที่เหมาะสมกับรายได้ระดับนี้
-    3. คำแนะนำอื่นๆ เพื่อความมั่งคั่งในอนาคต
+    กรุณาให้คำแนะนำสั้นๆ 3 ข้อ เป็นภาษาไทย เกี่ยวกับ:
+    1. การวางแผนภาษี
+    2. การออมและการลงทุน
+    3. คำแนะนำอื่นๆ
     
-    จัดรูปแบบเป็น Bullet points ที่อ่านง่าย และให้กำลังใจ
+    จัดรูปแบบเป็น Bullet points ที่อ่านง่าย
   `;
 
-  // รายชื่อ Model และ Version ที่จะลอง (เรียงตามลำดับความน่าจะเป็นไปได้)
-  const attempts = [
-    { ver: 'v1', model: 'gemini-1.5-flash' },
-    { ver: 'v1beta', model: 'gemini-1.5-flash' },
-    { ver: 'v1', model: 'gemini-pro' },
-    { ver: 'v1beta', model: 'gemini-pro' }
-  ];
+  // ใช้ URL ที่ตรงตัวที่สุดตามคู่มือ Google
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
-  let lastError = "";
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
+      })
+    });
 
-  for (const attempt of attempts) {
-    const url = `https://generativelanguage.googleapis.com/${attempt.ver}/models/${attempt.model}:generateContent?key=${apiKey}`;
-    
-    try {
-      console.log(`Trying Gemini with ${attempt.ver} and ${attempt.model}...`);
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
-        })
-      });
+    const data = await response.json();
 
-      const data = await response.json();
-
-      if (response.ok) {
-        const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (aiText) return aiText;
-      } else {
-        lastError = data.error?.message || `Error ${response.status}`;
-        console.warn(`Attempt failed for ${attempt.model}:`, lastError);
-      }
-    } catch (e: any) {
-      lastError = e.message;
-      console.warn(`Fetch failed for ${attempt.model}:`, e.message);
+    if (!response.ok) {
+      // ถ้า Google ตอบกลับมาเป็น Error ให้โชว์เหตุผลจริงๆ ออกมาเลย
+      console.error("Google API Error:", data);
+      return `Google แจ้งความผิดพลาด (${response.status}): ${data.error?.message || "ไม่ทราบสาเหตุ"}`;
     }
-  }
 
-  return `ไม่สามารถติดต่อ AI ได้หลังพยายามหลายครั้ง: ${lastError} (โปรดเช็กว่า Key ของคุณเปิดใช้งาน Gemini API ไว้แล้วใน AI Studio)`;
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || "AI ไม่มีคำตอบกลับมาในขณะนี้";
+
+  } catch (error: any) {
+    console.error("Fetch Error:", error);
+    return `ข้อผิดพลาดในการเชื่อมต่อ: ${error.message}`;
+  }
 };
