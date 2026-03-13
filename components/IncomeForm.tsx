@@ -19,8 +19,8 @@ const IncomeForm: React.FC<IncomeFormProps> = ({
       <h2 className="text-sm font-bold text-indigo-600 mb-6 flex items-center gap-2 uppercase tracking-tight">
         <i className="fas fa-coins"></i> ข้อมูลรายได้
       </h2>
-      <div className="grid grid-cols-2 gap-5">
-        <div className="col-span-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+        <div className="sm:col-span-2">
           <NumericInput
             label="เงินเดือน (Base Salary)"
             name="baseSalary"
@@ -28,7 +28,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({
             onChange={handleIncomeChange}
             placeholder="เช่น 27000"
             labelClass={labelClass}
-            className="w-full px-4 py-3 bg-indigo-50/30 border border-indigo-100 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none text-2xl font-black text-indigo-900 transition-all"
+            className="w-full px-4 py-3 bg-indigo-50/30 border border-indigo-100 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none text-xl md:text-2xl font-black text-indigo-900 transition-all"
           />
         </div>
         
@@ -82,7 +82,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({
           />
         </div>
 
-        <div className="col-span-2 mt-2 py-3 px-4 bg-indigo-50/50 rounded-xl border border-indigo-100/50">
+        <div className="col-span-1 sm:col-span-2 mt-2 py-3 px-4 bg-indigo-50/50 rounded-xl border border-indigo-100/50">
           <p className="text-[10px] text-indigo-500 leading-relaxed font-medium">
             <i className="fas fa-info-circle mr-1"></i>
             ระบบจะคำนวณวันขาดงานอัตโนมัติหากวันมาทำงานจริงไม่ครบ 26 วันตามมาตรฐาน

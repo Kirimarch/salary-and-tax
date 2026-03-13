@@ -126,21 +126,22 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-12 font-['Kanit']">
-      <header className="bg-white border-b border-slate-200 py-6 mb-8 sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="bg-indigo-600 p-2 rounded-lg text-white shadow-lg shadow-indigo-200">
-              <i className="fas fa-file-invoice-dollar text-2xl"></i>
+      <header className="bg-white border-b border-slate-200 py-4 md:py-6 mb-6 md:mb-8 sticky top-0 z-50 shadow-sm">
+        <div className="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-3 self-start sm:self-auto">
+            <div className="bg-indigo-600 p-2 rounded-lg text-white shadow-lg shadow-indigo-200 shrink-0">
+              <i className="fas fa-file-invoice-dollar text-xl md:text-2xl"></i>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-800 leading-tight">Enterprise Network Technology.co ltd</h1>
-              <p className="text-slate-400 text-[10px] uppercase tracking-widest font-bold">Smart Payroll Management System</p>
+              <h1 className="text-lg md:text-xl font-bold text-slate-800 leading-tight">ENT Payroll System</h1>
+              <p className="text-slate-400 text-[9px] md:text-[10px] uppercase tracking-widest font-bold">Smart Management</p>
             </div>
           </div>
 
           {hasInput && (
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col xs:flex-row items-center gap-2 md:gap-3 w-full sm:w-auto">
               <PDFDownloadLink
+                className="w-full sm:w-auto"
                 document={
                   <SalarySlipPDF 
                     result={result}
@@ -157,30 +158,30 @@ const App: React.FC = () => {
                 {({ loading }) => (
                   <button 
                     disabled={loading}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-2xl text-sm font-black uppercase flex items-center gap-2 transition-all shadow-xl shadow-indigo-100 hover:scale-105 active:scale-95 group disabled:opacity-50"
+                    className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-4 md:px-6 py-2 md:py-2.5 rounded-xl md:rounded-2xl text-[12px] md:text-sm font-black uppercase flex items-center justify-center gap-2 transition-all shadow-xl shadow-indigo-100 active:scale-95 group disabled:opacity-50"
                   >
                     <i className="fas fa-file-pdf group-hover:rotate-12 transition-transform"></i>
-                    {loading ? 'Generating...' : 'Download PDF Slip'}
+                    {loading ? 'Generating...' : 'PDF Slip'}
                   </button>
                 )}
               </PDFDownloadLink>
 
               <button 
                 onClick={handleDownloadExcel}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-2xl text-sm font-black uppercase flex items-center gap-2 transition-all shadow-xl shadow-emerald-100 hover:scale-105 active:scale-95 group"
+                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white px-4 md:px-6 py-2 md:py-2.5 rounded-xl md:rounded-2xl text-[12px] md:text-sm font-black uppercase flex items-center justify-center gap-2 transition-all shadow-xl shadow-emerald-100 active:scale-95 group"
               >
                 <i className="fas fa-file-excel group-hover:rotate-12 transition-transform"></i>
-                Export Excel Report
+                Excel Report
               </button>
             </div>
           )}
         </div>
       </header>
 
-      <main className="container mx-auto px-4 grid grid-cols-1 xl:grid-cols-12 gap-8">
+      <main className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
         
         {/* INPUTS PANEL */}
-        <div className="xl:col-span-5 space-y-6">
+        <div className="lg:col-span-5 space-y-6">
           <EmployeeInfo
             employeeId={employeeId}
             employeeName={employeeName}
@@ -203,15 +204,17 @@ const App: React.FC = () => {
         </div>
 
         {/* RESULTS PANEL */}
-        <ResultsPanel
-          result={result}
-          income={sanitize<IncomeData>(income)}
-          attendance={sanitize<AttendanceData>(attendance)}
-          employeeName={employeeName}
-          employeeId={employeeId}
-          hasInput={hasInput}
-          handleDownloadExcel={handleDownloadExcel}
-        />
+        <div className="lg:col-span-7">
+          <ResultsPanel
+            result={result}
+            income={sanitize<IncomeData>(income)}
+            attendance={sanitize<AttendanceData>(attendance)}
+            employeeName={employeeName}
+            employeeId={employeeId}
+            hasInput={hasInput}
+            handleDownloadExcel={handleDownloadExcel}
+          />
+        </div>
       </main>
 
       <footer className="container mx-auto px-4 mt-12 py-8 border-t border-slate-200 text-center space-y-3">
