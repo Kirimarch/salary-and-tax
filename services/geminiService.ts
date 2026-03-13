@@ -12,53 +12,49 @@ export const getFinancialAdvice = async (
     return "โปรแกรมหา API Key ไม่เจอ (กรุณาเช็กหน้า Variables ใน Railway)";
   }
 
-  const prompt = `วิเคราะห์รายได้เดือนละ ${result.monthlyNet} บาท และแนะนำการออมสั้นๆ 3 ข้อ`;
+  const prompt = `
+    ในฐานะที่ปรึกษาทางการเงินมืออาชีพ ช่วยวิเคราะห์สถานะทางการเงินของผู้ใช้คนนี้:
+    - รายรับต่อเดือน (ก่อนหักภาษี/ประกันสังคม): ${result.monthlyGrossAfterDeductions} บาท
+    - รายรับต่อปีรวมโบนัส: ${result.yearlyGross} บาท
+    - ภาษีที่ต้องจ่ายต่อปี: ${result.yearlyTax} บาท (ฐานภาษีสูงสุด: ${result.taxBracket})
+    - ประกันสังคมต่อเดือน: ${result.monthlySSO} บาท
+    - กองทุนสำรองเลี้ยงชีพ: ${result.monthlyProvidentFund} บาท (${deduction.providentFundRate}%)
+    - เงินเดือนสุทธิหลังหักภาษีและอื่นๆ: ${result.monthlyNet} บาท
 
-  // รายชื่อโมเดลที่จะลองเรียงตามลำดับ
-  const modelsToTry = [
-    "gemini-1.5-flash",
-    "gemini-1.5-flash-8b",
-    "gemini-1.0-pro"
-  ];
-
-  let lastError = "";
-
-  for (const modelName of modelsToTry) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+    กรุณาให้คำแนะนำสั้นๆ 3-4 ข้อ เป็นภาษาไทย เกี่ยวกับ:
+    1. การวางแผนภาษี (เช่น การลดหย่อนเพิ่มเติมผ่าน SSF, RMF หรือประกัน)
+    2. การออมและการลงทุนที่เหมาะสมกับรายได้ระดับนี้
+    3. คำแนะนำอื่นๆ เพื่อความมั่งคั่งในอนาคต
     
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
-        })
-      });
+    จัดรูปแบบเป็น Bullet points ที่อ่านง่าย และให้กำลังใจ
+  `;
 
-      const data = await response.json();
+  // เลือกใช้รุ่นที่เทพที่สุดที่คุณมีสิทธิ์ (Gemini 2.0 Flash)
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
-      if (response.ok) {
-        return data.candidates?.[0]?.content?.parts?.[0]?.text || "AI ไม่มีคำตอบ";
-      } else {
-        lastError = data.error?.message || "Unknown error";
-        console.warn(`Model ${modelName} failed:`, lastError);
-      }
-    } catch (e: any) {
-      lastError = e.message;
-    }
-  }
-
-  // --- ถ้าลองทุกตัวแล้วยังไม่ได้ (404 หมด) ให้ไปดึงรายชื่อโมเดลที่ Key นี้ใช้ได้จริงมาโชว์ ---
   try {
-    const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
-    const listRes = await fetch(listUrl);
-    const listData = await listRes.json();
-    
-    if (listData.models) {
-      const availableModels = listData.models.map((m: any) => m.name.replace("models/", "")).join(", ");
-      return `Google แจ้งว่าไม่เจอโมเดลที่คุณสั่ง (404) แต่ Key ของคุณสามารถใช้รุ่นเหล่านี้ได้: ${availableModels} (โปรดเลือกหนึ่งตัวมาบอกผม เดี๋ยวผมแก้ให้ครับ)`;
-    }
-  } catch (e) {}
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 1024
+        }
+      })
+    });
 
-  return `ไม่สามารถใช้โมเดลไหนได้เลย: ${lastError} (รบกวนลองสร้าง API Key ใหม่ใน AI Studio หรือรอ 5-10 นาทีให้ระบบ Google อัปเดตสิทธิ์ครับ)`;
+    const data = await response.json();
+
+    if (response.ok) {
+      return data.candidates?.[0]?.content?.parts?.[0]?.text || "AI ไม่มีคำตอบ";
+    } else {
+      console.error("Gemini Error:", data);
+      return `เกิดข้อผิดพลาด (${response.status}): ${data.error?.message || "ติดต่อ AI ไม่ได้"}`;
+    }
+  } catch (error: any) {
+    console.error("Fetch Error:", error);
+    return `ข้อผิดพลาดในการเชื่อมต่อ: ${error.message}`;
+  }
 };
