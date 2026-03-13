@@ -61,8 +61,53 @@ const App: React.FC = () => {
 
   const [attendance, setAttendance] = useState<InputState<AttendanceData>>(() => {
     const saved = localStorage.getItem('payroll_attendance');
-    return saved ? JSON.parse(saved) : { ...initialAttendance, annualLeave: '', sickLeaveWithCert: '', personalLeave: '', absentDays: '', lateMinutes: '' };
+    return saved ? JSON.parse(saved) : initialAttendance;
   });
+
+  // URL Parameter Detection for LINE Bot Integration
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    
+    // Employee Info
+    const name = params.get('name');
+    const id = params.get('id');
+    if (name) setEmployeeName(name);
+    if (id) setEmployeeId(id);
+
+    // Income Info
+    const salary = params.get('salary');
+    const days = params.get('days');
+    const pos = params.get('pos');
+    const dil = params.get('dil');
+    const ot = params.get('ot');
+
+    if (salary || days || pos || dil || ot) {
+      setIncome(prev => ({
+        ...prev,
+        baseSalary: salary ? Number(salary) : prev.baseSalary,
+        actualWorkingDays: days ? Number(days) : prev.actualWorkingDays,
+        positionAllowance: pos ? Number(pos) : prev.positionAllowance,
+        diligenceAllowance: dil ? Number(dil) : prev.diligenceAllowance,
+        otHours: ot ? Number(ot) : prev.otHours,
+      }));
+    }
+
+    // Attendance Info
+    const late = params.get('late');
+    const absent = params.get('absent');
+    if (late || absent) {
+      setAttendance(prev => ({
+        ...prev,
+        lateMinutes: late ? Number(late) : prev.lateMinutes,
+        absentDays: absent ? Number(absent) : prev.absentDays,
+      }));
+    }
+
+    // Clean up URL after loading for a cleaner look
+    if (params.toString()) {
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
 
   const [deduction, setDeduction] = useState<InputState<DeductionData>>(() => {
     const saved = localStorage.getItem('payroll_deduction');
