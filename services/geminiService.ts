@@ -9,7 +9,7 @@ export const getFinancialAdvice = async (
   const apiKey = (typeof process !== 'undefined' && process.env?.API_KEY) || import.meta.env.VITE_GEMINI_API_KEY;
   
   if (!apiKey || apiKey === "undefined") {
-    return "กรุณาตั้งค่า API Key ในไฟล์ .env และ Restart ระบบ (เช่น VITE_GEMINI_API_KEY=your_key)";
+    return "กรุณาตั้งค่า API Key ในไฟล์ .env และ Restart ระบบ";
   }
 
   const prompt = `
@@ -29,46 +29,44 @@ export const getFinancialAdvice = async (
     จัดรูปแบบเป็น Bullet points ที่อ่านง่าย และให้กำลังใจ
   `;
 
-  // วิธีเรียกตรง (Native Fetch) เพื่อความเสถียรสูงสุด
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+  // รายชื่อ Model และ Version ที่จะลอง (เรียงตามลำดับความน่าจะเป็นไปได้)
+  const attempts = [
+    { ver: 'v1', model: 'gemini-1.5-flash' },
+    { ver: 'v1beta', model: 'gemini-1.5-flash' },
+    { ver: 'v1', model: 'gemini-pro' },
+    { ver: 'v1beta', model: 'gemini-pro' }
+  ];
 
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: prompt
-              }
-            ]
-          }
-        ],
-        generationConfig: {
-          temperature: 0.7,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 1024,
-        }
-      })
-    });
+  let lastError = "";
 
-    const data = await response.json();
+  for (const attempt of attempts) {
+    const url = `https://generativelanguage.googleapis.com/${attempt.ver}/models/${attempt.model}:generateContent?key=${apiKey}`;
+    
+    try {
+      console.log(`Trying Gemini with ${attempt.ver} and ${attempt.model}...`);
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+        })
+      });
 
-    if (!response.ok) {
-      console.error("Gemini Error Data:", data);
-      throw new Error(data.error?.message || `HTTP error! status: ${response.status}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (aiText) return aiText;
+      } else {
+        lastError = data.error?.message || `Error ${response.status}`;
+        console.warn(`Attempt failed for ${attempt.model}:`, lastError);
+      }
+    } catch (e: any) {
+      lastError = e.message;
+      console.warn(`Fetch failed for ${attempt.model}:`, e.message);
     }
-
-    const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    return aiText || "ขออภัย ไม่สามารถดึงข้อมูลคำแนะนำได้ในขณะนี้";
-
-  } catch (error: any) {
-    console.error("Gemini Fetch Error:", error);
-    return `เกิดข้อผิดพลาดในการติดต่อ AI: ${error.message}`;
   }
+
+  return `ไม่สามารถติดต่อ AI ได้หลังพยายามหลายครั้ง: ${lastError} (โปรดเช็กว่า Key ของคุณเปิดใช้งาน Gemini API ไว้แล้วใน AI Studio)`;
 };
