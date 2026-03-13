@@ -9,9 +9,9 @@ RUN npm run build
 # Runner stage
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
-# Add custom nginx config to handle React Router (if needed)
+# เปลี่ยน Nginx ให้รันที่ Port 3000 ตามที่ Railway ตั้งค่าไว้
 RUN echo 'server { \
-    listen 80; \
+    listen 3000; \
     location / { \
         root /usr/share/nginx/html; \
         index index.html index.htm; \
@@ -19,5 +19,5 @@ RUN echo 'server { \
     } \
 }' > /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+EXPOSE 3000
 CMD ["nginx", "-g", "daemon off;"]
