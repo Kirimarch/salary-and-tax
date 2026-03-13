@@ -56,6 +56,11 @@ export const exportToExcel = (
     }
   };
 
+  const numberBoldStyle = {
+    ...numberStyle,
+    font: { bold: true }
+  };
+
   const summaryStyle = {
     fill: { fgColor: { rgb: "1F4E78" } }, // สีน้ำเงินเข้มสำหรับยอดสรุป
     font: { bold: true, color: { rgb: "FFFFFF" }, sz: 12 },
@@ -81,27 +86,27 @@ export const exportToExcel = (
 
   // รายรับ
   addRow([{ v: "รายการรายรับ (Earnings)", s: subHeaderStyle }, { v: "จำนวนเงิน (บาท)", s: subHeaderStyle }]);
-  addRow([{ v: "เงินเดือนพื้นฐาน", s: labelStyle }, { v: round(income.baseSalary), s: numberStyle }]);
-  addRow([{ v: "ค่าตำแหน่ง", s: labelStyle }, { v: round(income.positionAllowance), s: numberStyle }]);
-  addRow([{ v: "เบี้ยขยัน", s: labelStyle }, { v: round(income.diligenceAllowance), s: numberStyle }]);
-  addRow([{ v: "ค่าล่วงเวลา (OT)", s: labelStyle }, { v: round(result.otAmount), s: numberStyle }]);
-  addRow([{ v: "รวมรายรับทั้งหมด", s: { ...subHeaderStyle, alignment: { horizontal: "right" } } }, { v: round(result.grossSalary + result.totalAdditions), s: { ...numberStyle, font: { bold: true } } }]);
+  addRow([{ v: "เงินเดือนพื้นฐาน", s: labelStyle }, { v: round(income.baseSalary), s: numberStyle, t: 'n' }]);
+  addRow([{ v: "ค่าตำแหน่ง", s: labelStyle }, { v: round(income.positionAllowance), s: numberStyle, t: 'n' }]);
+  addRow([{ v: "เบี้ยขยัน", s: labelStyle }, { v: round(income.diligenceAllowance), s: numberStyle, t: 'n' }]);
+  addRow([{ v: "ค่าล่วงเวลา (OT)", s: labelStyle }, { v: round(result.otAmount), s: numberStyle, t: 'n' }]);
+  addRow([{ v: "รวมรายรับทั้งหมด", s: { ...subHeaderStyle, alignment: { horizontal: "right" } } }, { v: round(result.grossSalary + result.totalAdditions), s: numberBoldStyle, t: 'n' }]);
   addRow([]);
 
   // รายจ่าย
   addRow([{ v: "รายการหัก (Deductions)", s: { ...subHeaderStyle, fill: { fgColor: { rgb: "F2F2F2" } } } }, { v: "จำนวนเงิน (บาท)", s: { ...subHeaderStyle, fill: { fgColor: { rgb: "F2F2F2" } } } }]);
-  addRow([{ v: "ประกันสังคม (SSO)", s: labelStyle }, { v: round(result.monthlySSO), s: numberStyle }]);
-  addRow([{ v: "ภาษีเงินได้บุคคลธรรมดา", s: labelStyle }, { v: round(result.monthlyTax), s: numberStyle }]);
-  addRow([{ v: "กองทุนสำรองเลี้ยงชีพ", s: labelStyle }, { v: round(result.monthlyProvidentFund), s: numberStyle }]);
-  addRow([{ v: "หักมาสาย", s: labelStyle }, { v: round(result.lateDeduction), s: numberStyle }]);
-  addRow([{ v: "หักลาคลอด (ส่วนที่เกิน 45 วัน)", s: labelStyle }, { v: round(result.maternityDeduction), s: numberStyle }]);
-  addRow([{ v: "หักลาฝึกอบรม (ส่วนที่เกิน 5 วัน)", s: labelStyle }, { v: round(result.trainingDeduction), s: numberStyle }]);
-  addRow([{ v: "หักขาดงาน/ลากิจ", s: labelStyle }, { v: round(result.leaveDeductions + result.absentDeduction), s: numberStyle }]);
-  addRow([{ v: "รวมรายการหักทั้งหมด", s: { ...subHeaderStyle, alignment: { horizontal: "right" }, fill: { fgColor: { rgb: "FFF2CC" } } } }, { v: round(result.monthlySSO + result.monthlyTax + result.monthlyProvidentFund + result.lateDeduction + result.leaveDeductions + result.absentDeduction + result.maternityDeduction + result.trainingDeduction), s: { ...numberStyle, font: { bold: true } } }]);
+  addRow([{ v: "ประกันสังคม (SSO)", s: labelStyle }, { v: round(result.monthlySSO), s: numberStyle, t: 'n' }]);
+  addRow([{ v: "ภาษีเงินได้บุคคลธรรมดา", s: labelStyle }, { v: round(result.monthlyTax), s: numberStyle, t: 'n' }]);
+  addRow([{ v: "กองทุนสำรองเลี้ยงชีพ", s: labelStyle }, { v: round(result.monthlyProvidentFund), s: numberStyle, t: 'n' }]);
+  addRow([{ v: "หักมาสาย", s: labelStyle }, { v: round(result.lateDeduction), s: numberStyle, t: 'n' }]);
+  addRow([{ v: "หักลาคลอด (ส่วนที่เกิน 45 วัน)", s: labelStyle }, { v: round(result.maternityDeduction), s: numberStyle, t: 'n' }]);
+  addRow([{ v: "หักลาฝึกอบรม (ส่วนที่เกิน 5 วัน)", s: labelStyle }, { v: round(result.trainingDeduction), s: numberStyle, t: 'n' }]);
+  addRow([{ v: "หักขาดงาน/ลากิจ", s: labelStyle }, { v: round(result.leaveDeductions + result.absentDeduction), s: numberStyle, t: 'n' }]);
+  addRow([{ v: "รวมรายการหักทั้งหมด", s: { ...subHeaderStyle, alignment: { horizontal: "right" }, fill: { fgColor: { rgb: "FFF2CC" } } } }, { v: round(result.monthlySSO + result.monthlyTax + result.monthlyProvidentFund + result.lateDeduction + result.leaveDeductions + result.absentDeduction + result.maternityDeduction + result.trainingDeduction), s: numberBoldStyle, t: 'n' }]);
   addRow([]);
 
   // สรุปยอดสุทธิ
-  addRow([{ v: "เงินเดือนสุทธิที่ได้รับ (Net Pay)", s: summaryStyle }, { v: round(result.monthlyNet), s: summaryStyle }]);
+  addRow([{ v: "เงินเดือนสุทธิที่ได้รับ (Net Pay)", s: summaryStyle }, { v: round(result.monthlyNet), s: summaryStyle, t: 'n' }]);
 
   const ws = XLSX.utils.aoa_to_sheet(ws_data);
 
