@@ -54,6 +54,30 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
             max={31}
           />
         </div>
+        <div className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100">
+          <NumericInput
+            label="ลาฝึกอบรม (วัน)"
+            name="trainingLeave"
+            value={attendance.trainingLeave}
+            onChange={handleAttendanceChange}
+            placeholder="0"
+            labelClass="text-[10px] text-emerald-600 font-black uppercase block mb-1.5"
+            className="w-full bg-transparent border-b border-emerald-200 outline-none font-bold text-emerald-700 pb-1"
+            max={31}
+          />
+        </div>
+        <div className="p-4 bg-yellow-50/50 rounded-2xl border border-yellow-100">
+          <NumericInput
+            label="ลาคลอด (วัน)"
+            name="maternityLeave"
+            value={attendance.maternityLeave}
+            onChange={handleAttendanceChange}
+            placeholder="0"
+            labelClass="text-[10px] text-yellow-600 font-black uppercase block mb-1.5"
+            className="w-full bg-transparent border-b border-yellow-200 outline-none font-bold text-yellow-700 pb-1"
+            max={98}
+          />
+        </div>
         <div className="p-4 bg-red-50/50 rounded-2xl border border-red-100">
           <NumericInput
             label="ขาดงานเพิ่ม (วัน)"

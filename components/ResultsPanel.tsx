@@ -30,7 +30,7 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
 }) => {
   const chartData = [
     { name: 'สุทธิ', value: result.monthlyNet },
-    { name: 'หักวันลา/สาย/ขาด', value: result.leaveDeductions + result.lateDeduction + result.absentDeduction },
+    { name: 'หักวันลา/สาย/ขาด', value: result.leaveDeductions + result.lateDeduction + result.absentDeduction + result.maternityDeduction + result.trainingDeduction },
     { name: 'ประกันสังคม', value: result.monthlySSO },
     { name: 'ภาษี', value: result.monthlyTax },
   ];
@@ -102,9 +102,26 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
                 )}
 
                 <tr className="hover:bg-slate-50 transition-colors bg-red-50/20">
-                  <td className="py-3 md:py-4 px-4 md:px-6 text-red-600 italic font-medium">หักลากิจ / ขาดงานเพิ่ม</td>
-                  <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-red-500">-{formatCurrency(result.leaveDeductions + (attendance.absentDays * result.dailyRate))}</td>
+                  <td className="py-3 md:py-4 px-4 md:px-6 text-red-600 italic font-medium">หักวันขาดงาน / ลากิจ</td>
+                  <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-red-500">
+                    -{formatCurrency(result.leaveDeductions + (attendance.absentDays * result.dailyRate))}
+                  </td>
                 </tr>
+
+                {result.maternityDeduction > 0 && (
+                  <tr className="hover:bg-slate-50 transition-colors bg-red-50/20">
+                    <td className="py-3 md:py-4 px-4 md:px-6 text-red-600 italic font-medium">หักลาคลอด (ส่วนเกิน 45 วัน)</td>
+                    <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-red-500">-{formatCurrency(result.maternityDeduction)}</td>
+                  </tr>
+                )}
+
+                {result.trainingDeduction > 0 && (
+                  <tr className="hover:bg-slate-50 transition-colors bg-red-50/20">
+                    <td className="py-3 md:py-4 px-4 md:px-6 text-red-600 italic font-medium">หักลาฝึกอบรม (ส่วนเกิน 5 วัน)</td>
+                    <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-red-500">-{formatCurrency(result.trainingDeduction)}</td>
+                  </tr>
+                )}
+
                 <tr className="hover:bg-slate-50 transition-colors bg-red-50/20">
                   <td className="py-3 md:py-4 px-4 md:px-6 text-red-600 italic font-medium">หักมาสาย {attendance.lateMinutes || 0} นาที</td>
                   <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-red-500">-{formatCurrency(result.lateDeduction)}</td>

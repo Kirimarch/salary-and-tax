@@ -37,13 +37,19 @@ export const calculateSalary = (
   const grossBase = baseSalary + posAllowance;
 
   // 4. คำนวณรายการหัก
-  // ลาที่หักเงิน: ลากิจ, ขาดงาน (จากช่องกรอก), ขาดงานอัตโนมัติ (จากความต่างวันมาจริง), สาย
+  // ลาที่หักเงิน: ลากิจ, ขาดงาน (จากช่องกรอก), ขาดงานอัตโนมัติ (จากความต่างวันมาจริง), สาย, ลาคลอด (ส่วนที่เกิน 45 วัน)
   const leaveDeductions = Math.max(0, attendance.personalLeave * dailyRate);
   const manualAbsentDeduction = Math.max(0, attendance.absentDays * dailyRate);
   const autoAbsentDeduction = Math.max(0, autoAbsentDays * dailyRate);
   const lateDeduction = Math.max(0, attendance.lateMinutes * minuteRate);
   
-  const totalPenalty = leaveDeductions + manualAbsentDeduction + autoAbsentDeduction + lateDeduction;
+  // ลาคลอด: หากเกิน 45 วัน จะหักเงินส่วนที่เกิน
+  const maternityDeduction = Math.max(0, (attendance.maternityLeave - 45) * dailyRate);
+  
+  // ลาฝึกอบรม: หากเกิน 5 วัน จะหักเงินส่วนที่เกิน
+  const trainingDeduction = Math.max(0, (attendance.trainingLeave - 5) * dailyRate);
+  
+  const totalPenalty = leaveDeductions + manualAbsentDeduction + autoAbsentDeduction + lateDeduction + maternityDeduction + trainingDeduction;
 
   // 5. รายได้ก่อนหักสวัสดิการ
   const monthlyGrossAfterDeductions = Math.max(0, grossBase + totalAdditions - totalPenalty);
@@ -86,6 +92,8 @@ export const calculateSalary = (
     totalAdditions,
     otAmount,
     leaveDeductions,
+    maternityDeduction,
+    trainingDeduction,
     lateDeduction,
     absentDeduction: manualAbsentDeduction + autoAbsentDeduction,
     autoAbsentDays,

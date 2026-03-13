@@ -1,6 +1,10 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { IncomeData, AttendanceData, DeductionData } from './types';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import { 
+  IncomeData, AttendanceData, DeductionData, 
+  CalculationResult 
+} from './types';
 import { calculateSalary } from './utils/calculators';
 import { exportToExcel } from './utils/excelExport';
 
@@ -10,73 +14,64 @@ import IncomeForm from './components/IncomeForm';
 import AttendanceForm from './components/AttendanceForm';
 import ResultsPanel from './components/ResultsPanel';
 import SalarySlipPDF from './components/SalarySlipPDF';
-import { PDFDownloadLink } from '@react-pdf/renderer';
+import AIAdvisor from './components/AIAdvisor';
+
+const initialIncome: IncomeData = {
+  baseSalary: 0,
+  positionAllowance: 0,
+  diligenceAllowance: 0,
+  otHours: 0,
+  bonus: 0,
+  actualWorkingDays: 26,
+  workingDaysPerMonth: 26,
+};
+
+const initialAttendance: AttendanceData = {
+  annualLeave: 0,
+  sickLeaveWithCert: 0,
+  personalLeave: 0,
+  maternityLeave: 0,
+  sterilizationLeave: 0,
+  militaryLeave: 0,
+  trainingLeave: 0,
+  absentDays: 0,
+  lateMinutes: 0,
+};
+
+const initialDeduction: DeductionData = {
+  providentFundRate: 0,
+  taxDeductions: 0,
+};
 
 type InputState<T> = { [K in keyof T]: number | '' };
 
-const STORAGE_KEY = 'payroll_master_data';
-
-const initialIncome: InputState<IncomeData> = {
-  baseSalary: '',
-  workingDaysPerMonth: 26,
-  actualWorkingDays: '',
-  positionAllowance: '',
-  diligenceAllowance: '',
-  otHours: '',
-  bonus: '',
-};
-
-const initialAttendance: InputState<AttendanceData> = {
-  annualLeave: '',
-  sickLeaveWithCert: '',
-  personalLeave: '',
-  maternityLeave: '',
-  sterilizationLeave: '',
-  militaryLeave: '',
-  trainingLeave: '',
-  absentDays: '',
-  lateMinutes: '',
-};
-
-const initialDeduction: InputState<DeductionData> = {
-  providentFundRate: '',
-  taxDeductions: '',
-};
-
 const App: React.FC = () => {
-  const [employeeName, setEmployeeName] = useState<string>('');
-  const [employeeId, setEmployeeId] = useState<string>('');
-  const [income, setIncome] = useState<InputState<IncomeData>>(initialIncome);
-  const [attendance, setAttendance] = useState<InputState<AttendanceData>>(initialAttendance);
-  const [deduction, setDeduction] = useState<InputState<DeductionData>>(initialDeduction);
+  // State with LocalStorage Persistence
+  const [employeeName, setEmployeeName] = useState<string>(() => localStorage.getItem('emp_name') || '');
+  const [employeeId, setEmployeeId] = useState<string>(() => localStorage.getItem('emp_id') || '');
+  
+  const [income, setIncome] = useState<InputState<IncomeData>>(() => {
+    const saved = localStorage.getItem('payroll_income');
+    return saved ? JSON.parse(saved) : { ...initialIncome, baseSalary: '', actualWorkingDays: '' };
+  });
 
-  // 1. Load data from localStorage on mount
-  useEffect(() => {
-    const savedData = localStorage.getItem(STORAGE_KEY);
-    if (savedData) {
-      try {
-        const parsed = JSON.parse(savedData);
-        if (parsed.employeeName) setEmployeeName(parsed.employeeName);
-        if (parsed.employeeId) setEmployeeId(parsed.employeeId);
-        if (parsed.income) setIncome(parsed.income);
-        if (parsed.attendance) setAttendance(parsed.attendance);
-        if (parsed.deduction) setDeduction(parsed.deduction);
-      } catch (e) {
-        console.error('Failed to load saved data:', e);
-      }
-    }
-  }, []);
+  const [attendance, setAttendance] = useState<InputState<AttendanceData>>(() => {
+    const saved = localStorage.getItem('payroll_attendance');
+    return saved ? JSON.parse(saved) : { ...initialAttendance, annualLeave: '', sickLeaveWithCert: '', personalLeave: '', absentDays: '', lateMinutes: '' };
+  });
 
-  // 2. Save data to localStorage whenever something changes
+  const [deduction, setDeduction] = useState<InputState<DeductionData>>(() => {
+    const saved = localStorage.getItem('payroll_deduction');
+    return saved ? JSON.parse(saved) : { ...initialDeduction, providentFundRate: '', taxDeductions: '' };
+  });
+
+  // Persist to LocalStorage
   useEffect(() => {
-    const dataToSave = {
-      employeeName,
-      employeeId,
-      income,
-      attendance,
-      deduction
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+    localStorage.setItem('emp_name', employeeName);
+    localStorage.setItem('emp_id', employeeId);
+    localStorage.setItem('payroll_income', JSON.stringify(income));
+    localStorage.setItem('payroll_attendance', JSON.stringify(attendance));
+    localStorage.setItem('payroll_deduction', JSON.stringify(deduction));
   }, [employeeName, employeeId, income, attendance, deduction]);
 
   const sanitize = <T extends object>(state: InputState<T>): T => {
@@ -85,6 +80,7 @@ const App: React.FC = () => {
       const val = state[key as keyof T];
       res[key] = (val === '' || val === undefined || val === null) ? 0 : Number(val);
     }
+    // Default to 26 days if not specified
     if ('workingDaysPerMonth' in res && (res.workingDaysPerMonth === 0 || res.workingDaysPerMonth === '')) {
       res.workingDaysPerMonth = 26;
     }
@@ -107,9 +103,7 @@ const App: React.FC = () => {
     setAttendance(prev => ({ ...prev, [name]: value }));
   };
 
-  const hasInput = 
-    income.baseSalary !== '' && Number(income.baseSalary) !== 0 && 
-    income.actualWorkingDays !== '' && Number(income.actualWorkingDays) !== 0;
+  const hasInput = income.baseSalary !== '' && Number(income.baseSalary) !== 0;
 
   const handleDownloadExcel = () => {
     exportToExcel(
@@ -139,9 +133,9 @@ const App: React.FC = () => {
           </div>
 
           {hasInput && (
-            <div className="flex flex-col xs:flex-row items-center gap-2 md:gap-3 w-full sm:w-auto">
+            <div className="flex items-center justify-end gap-2 md:gap-3 w-full sm:w-auto">
               <PDFDownloadLink
-                className="w-full sm:w-auto"
+                className="flex-1 sm:flex-none"
                 document={
                   <SalarySlipPDF 
                     result={result}
@@ -158,17 +152,17 @@ const App: React.FC = () => {
                 {({ loading }) => (
                   <button 
                     disabled={loading}
-                    className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-4 md:px-6 py-2 md:py-2.5 rounded-xl md:rounded-2xl text-[12px] md:text-sm font-black uppercase flex items-center justify-center gap-2 transition-all shadow-xl shadow-indigo-100 active:scale-95 group disabled:opacity-50"
+                    className="w-full sm:w-auto min-w-[100px] md:min-w-[120px] bg-indigo-600 hover:bg-indigo-700 text-white px-3 md:px-5 py-2 md:py-2.5 rounded-xl md:rounded-2xl text-[11px] md:text-xs font-black uppercase flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-100 active:scale-95 group disabled:opacity-50 whitespace-nowrap"
                   >
                     <i className="fas fa-file-pdf group-hover:rotate-12 transition-transform"></i>
-                    {loading ? 'Generating...' : 'PDF Slip'}
+                    {loading ? '...' : 'PDF Slip'}
                   </button>
                 )}
               </PDFDownloadLink>
 
               <button 
                 onClick={handleDownloadExcel}
-                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white px-4 md:px-6 py-2 md:py-2.5 rounded-xl md:rounded-2xl text-[12px] md:text-sm font-black uppercase flex items-center justify-center gap-2 transition-all shadow-xl shadow-emerald-100 active:scale-95 group"
+                className="flex-1 sm:flex-none w-full sm:w-auto min-w-[100px] md:min-w-[120px] bg-emerald-600 hover:bg-emerald-700 text-white px-3 md:px-5 py-2 md:py-2.5 rounded-xl md:rounded-2xl text-[11px] md:text-xs font-black uppercase flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-100 active:scale-95 group whitespace-nowrap"
               >
                 <i className="fas fa-file-excel group-hover:rotate-12 transition-transform"></i>
                 Excel Report
@@ -201,6 +195,14 @@ const App: React.FC = () => {
             attendance={attendance}
             handleAttendanceChange={handleAttendanceChange}
           />
+
+          {hasInput && (
+            <AIAdvisor 
+              result={result}
+              income={sanitize<IncomeData>(income)}
+              deduction={sanitize<DeductionData>(deduction)}
+            />
+          )}
         </div>
 
         {/* RESULTS PANEL */}

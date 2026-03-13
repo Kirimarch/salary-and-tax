@@ -94,8 +94,10 @@ export const exportToExcel = (
   addRow([{ v: "ภาษีเงินได้บุคคลธรรมดา", s: labelStyle }, { v: round(result.monthlyTax), s: numberStyle }]);
   addRow([{ v: "กองทุนสำรองเลี้ยงชีพ", s: labelStyle }, { v: round(result.monthlyProvidentFund), s: numberStyle }]);
   addRow([{ v: "หักมาสาย", s: labelStyle }, { v: round(result.lateDeduction), s: numberStyle }]);
+  addRow([{ v: "หักลาคลอด (ส่วนที่เกิน 45 วัน)", s: labelStyle }, { v: round(result.maternityDeduction), s: numberStyle }]);
+  addRow([{ v: "หักลาฝึกอบรม (ส่วนที่เกิน 5 วัน)", s: labelStyle }, { v: round(result.trainingDeduction), s: numberStyle }]);
   addRow([{ v: "หักขาดงาน/ลากิจ", s: labelStyle }, { v: round(result.leaveDeductions + result.absentDeduction), s: numberStyle }]);
-  addRow([{ v: "รวมรายการหักทั้งหมด", s: { ...subHeaderStyle, alignment: { horizontal: "right" }, fill: { fgColor: { rgb: "FFF2CC" } } } }, { v: round(result.monthlySSO + result.monthlyTax + result.monthlyProvidentFund + result.lateDeduction + result.leaveDeductions + result.absentDeduction), s: { ...numberStyle, font: { bold: true } } }]);
+  addRow([{ v: "รวมรายการหักทั้งหมด", s: { ...subHeaderStyle, alignment: { horizontal: "right" }, fill: { fgColor: { rgb: "FFF2CC" } } } }, { v: round(result.monthlySSO + result.monthlyTax + result.monthlyProvidentFund + result.lateDeduction + result.leaveDeductions + result.absentDeduction + result.maternityDeduction + result.trainingDeduction), s: { ...numberStyle, font: { bold: true } } }]);
   addRow([]);
 
   // สรุปยอดสุทธิ

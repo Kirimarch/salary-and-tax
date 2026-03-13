@@ -34,6 +34,8 @@ export interface CalculationResult {
   totalAdditions: number;
   otAmount: number;
   leaveDeductions: number;
+  maternityDeduction: number;
+  trainingDeduction: number;
   lateDeduction: number;
   absentDeduction: number;
   autoAbsentDays: number; // จำนวนวันที่ขาดจากการคำนวณ (Expected - Actual)
