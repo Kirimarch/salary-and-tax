@@ -6,7 +6,6 @@ export const getFinancialAdvice = async (
   income: IncomeData,
   deduction: DeductionData
 ): Promise<string> => {
-  // Accessing API Key from Vite's define (process.env mapping)
   // @ts-ignore
   const apiKey = (typeof process !== 'undefined' && process.env?.API_KEY) || import.meta.env.VITE_GEMINI_API_KEY;
   if (!apiKey || apiKey === "undefined") return "กรุณาตั้งค่า API Key ในไฟล์ .env และ Restart ระบบ";
@@ -31,12 +30,16 @@ export const getFinancialAdvice = async (
   `;
 
   try {
+    // ใช้คำสั่งมาตรฐานเพื่อเชื่อมต่อกับโมเดล
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const response = await model.generateContent(prompt);
+    const chatSession = model.startChat();
+    const response = await chatSession.sendMessage(prompt);
     const text = response.response.text();
+    
     return text || "ขออภัย ไม่สามารถดึงข้อมูลคำแนะนำได้ในขณะนี้";
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini Error:", error);
-    return "เกิดข้อผิดพลาดในการติดต่อที่ปรึกษา AI (โปรดตรวจสอบ API Key และการเชื่อมต่ออินเทอร์เน็ต)";
+    // ถ้ายังเจอ 404 อีก ให้ลองรุ่นมาตรฐาน
+    return `เกิดข้อผิดพลาด: ${error?.message || "ติดต่อ AI ไม่ได้"}`;
   }
 };
