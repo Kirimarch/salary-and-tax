@@ -1,4 +1,3 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { CalculationResult, IncomeData, DeductionData } from "../types";
 
 export const getFinancialAdvice = async (
@@ -8,10 +7,11 @@ export const getFinancialAdvice = async (
 ): Promise<string> => {
   // @ts-ignore
   const apiKey = (typeof process !== 'undefined' && process.env?.API_KEY) || import.meta.env.VITE_GEMINI_API_KEY;
-  if (!apiKey || apiKey === "undefined") return "กรุณาตั้งค่า API Key ในไฟล์ .env และ Restart ระบบ";
   
-  const genAI = new GoogleGenerativeAI(apiKey);
-  
+  if (!apiKey || apiKey === "undefined") {
+    return "กรุณาตั้งค่า API Key ในไฟล์ .env และ Restart ระบบ (เช่น VITE_GEMINI_API_KEY=your_key)";
+  }
+
   const prompt = `
     ในฐานะที่ปรึกษาทางการเงินมืออาชีพ ช่วยวิเคราะห์สถานะทางการเงินของผู้ใช้คนนี้:
     - รายรับต่อเดือน (ก่อนหักภาษี/ประกันสังคม): ${result.monthlyGrossAfterDeductions} บาท
@@ -29,15 +29,46 @@ export const getFinancialAdvice = async (
     จัดรูปแบบเป็น Bullet points ที่อ่านง่าย และให้กำลังใจ
   `;
 
+  // วิธีเรียกตรง (Native Fetch) เพื่อความเสถียรสูงสุด
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
   try {
-    // เปลี่ยนมาใช้ gemini-pro ซึ่งเป็นรุ่นมาตรฐานที่สุด (ชัวร์กว่า)
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    const response = await model.generateContent(prompt);
-    const text = response.response.text();
-    
-    return text || "ขออภัย ไม่สามารถดึงข้อมูลคำแนะนำได้ในขณะนี้";
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: prompt
+              }
+            ]
+          }
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 1024,
+        }
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("Gemini Error Data:", data);
+      throw new Error(data.error?.message || `HTTP error! status: ${response.status}`);
+    }
+
+    const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    return aiText || "ขออภัย ไม่สามารถดึงข้อมูลคำแนะนำได้ในขณะนี้";
+
   } catch (error: any) {
-    console.error("Gemini Error:", error);
-    return `เกิดข้อผิดพลาด: ${error?.message || "ติดต่อ AI ไม่ได้"}`;
+    console.error("Gemini Fetch Error:", error);
+    return `เกิดข้อผิดพลาดในการติดต่อ AI: ${error.message}`;
   }
 };
