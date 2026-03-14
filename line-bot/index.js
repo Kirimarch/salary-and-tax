@@ -114,7 +114,7 @@ async function handleEvent(event) {
          body: {
            type: "box",
            layout: "vertical",
-           contents: [Object.keys(data).map(key => ({
+           contents: Object.keys(data).map(key => ({
              type: "box",
              layout: "horizontal",
              contents: [
@@ -135,7 +135,7 @@ async function handleEvent(event) {
                  flex: 6
                }
              ]
-           })).flat()]
+           }))
          },
          footer: {
            type: "box",
