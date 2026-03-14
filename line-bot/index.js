@@ -61,7 +61,7 @@ async function handleEvent(event) {
   const userText = event.message.text;
 
   try {
-     const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
      const prompt = promptTemplate.replace('{MESSAGE}', userText);
      const result = await model.generateContent(prompt);
      const responseText = result.response.text().trim();
