@@ -16,23 +16,39 @@ const port = process.env.PORT || 3000;
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const promptTemplate = `
-คุณคือผู้ช่วยดึงข้อมูลเงินเดือนและการทำงานจากข้อความ
-ให้ดึงข้อมูลต่อไปนี้ และคืนค่าผลลัพธ์เป็น JSON Object เท่านั้น ห้ามมีข้อความอื่น ห้ามมี markdown format
-คีย์สำหรับ JSON:
-- id (string: รหัสพนักงาน หากไม่มีไม่ต้องใส่)
-- name (string: ชื่อพนักงาน หากไม่มีไม่ต้องใส่)
-- salary (number: เงินเดือนฐาน)
-- days (number: จำนวนวันที่มาทำงานจริง)
-- pos (number: ค่าตำแหน่ง)
-- dil (number: เบี้ยขยัน)
-- ot (number: จำนวนชั่วโมง OT)
-- late (number: สายกี่นาที)
-- absent (number: ขาดงานกี่วัน)
+คุณคือผู้ช่วยอัจฉริยะของระบบจัดการเงินเดือน (Payroll System) 
+ทำหน้าที่วิเคราะห์ความต้องการของผู้ใช้และดึงข้อมูล
 
-หากไม่พบข้อมูลไหนในประโยค ให้เอาคีย์นั้นออกไปเลย ห้ามใส่ null หรือ 0 ยกเว้นผู้ใช้ระบุว่า 0
+ให้ตอบกลับเป็น JSON Object เท่านั้น โดยมีโครงสร้างดังนี้:
+{
+  "type": "calculate" | "greeting" | "help" | "unknown",
+  "data": { // ใส่ข้อมูลเฉพาะเมื่อ type เป็น "calculate" เท่านั้น
+    "id": "รหัสพนักงาน",
+    "name": "ชื่อพนักงาน",
+    "salary": 25000,
+    "days": 26,
+    "pos": 0,
+    "dil": 0,
+    "ot": 0,
+    "late": 0,
+    "absent": 0
+  },
+  "text": "ข้อความตอบกลับภาษาไทยที่เหมาะสม"
+}
 
-ข้อความที่ต้องดึงข้อมูล:
-"{MESSAGE}"
+เกณฑ์การตัดสิน type:
+- "calculate": เมื่อมีการระบุเงินเดือน, วันทำงาน, หรือข้อมูลรายได้/รายหัก
+- "greeting": เมื่อเป็นการทักทาย เช่น สวัสดี, หวัดดี, ทักครับ, hi, hello
+- "help": เมื่อถามวิธีใช้, ทำอะไรได้บ้าง, สอนหน่อย, ใช้ยังไง
+- "unknown": เมื่อไม่ตรงกับข้อไหนเลย หรือเป็นคำถามทั่วไปที่ไม่มีข้อมูลเงินเดือน
+
+คำแนะนำในการตอบ "text":
+- สำหรับ "greeting": ทักทายอย่างเป็นกันเองและชวนให้ใช้ระบบ
+- สำหรับ "help": อธิบายสั้นๆ ว่าบอททำอะไรได้บ้าง (เช่น พิมพ์ "สมชาย เงินเดือน 30000")
+- สำหรับ "calculate": ส่งข้อความยืนยันสั้นๆ เช่น "รับทราบครับ กำลังเตรียมลิงก์คำนวณให้คุณ..."
+- สำหรับ "unknown": แจ้งว่าไม่เข้าใจและแนะนำให้พิมพ์คำสั่งช่วยสอน
+
+ข้อความจากผู้ใช้: "{MESSAGE}"
 `;
 
 const lineClient = new line.messagingApi.MessagingApiClient({
@@ -75,21 +91,29 @@ async function handleEvent(event) {
          jsonString = jsonString.replace(/```/g, '').trim();
      }
 
-     let data;
+     let aiResponse;
      try {
-         data = JSON.parse(jsonString);
+         aiResponse = JSON.parse(jsonString);
      } catch (e) {
          console.log("Failed to parse JSON: ", jsonString);
-         return replyText(event.replyToken, 'ขออภัย ระบบไม่สามารถแยกแยะข้อมูลเงินเดือนได้ กรุณาลองพิมพ์ใหม่ เช่น "สมชาย เงินเดือน 25000 หักสาย 30 นาที"');
+         return replyText(event.replyToken, 'ขออภัย ระบบไม่เข้าใจโปรดลองใหม่อีกครั้ง หรือพิมพ์ "สอนหน่อย" เพื่อดูวิธีใช้ครับ');
      }
 
-     if (Object.keys(data).length === 0) {
-         return replyText(event.replyToken, 'กรุณาระบุข้อมูลที่ต้องการคำนวณ เช่น "สมชาย เงินเดือน 30000 ขาดงาน 1 วัน"');
+     // ถ้าเป็นกรณี Greeting หรือ Help ให้ตอบเป็นข้อความ Text ปกติ
+     if (aiResponse.type !== 'calculate') {
+         return replyText(event.replyToken, aiResponse.text || 'มีอะไรให้ผมช่วยไหมครับ?');
+     }
+
+     const data = aiResponse.data;
+     if (!data || Object.keys(data).length === 0 || !data.salary) {
+         return replyText(event.replyToken, aiResponse.text || 'กรุณาระบุข้อมูลเงินเดือนมาด้วยนะครับ เช่น "สมชาย เงินเดือน 30000"');
      }
 
      const params = new URLSearchParams();
      for (const key of Object.keys(data)) {
-         params.append(key, data[key]);
+         if (data[key] !== undefined && data[key] !== null) {
+             params.append(key, data[key]);
+         }
      }
 
      const finalUrl = `${process.env.WEB_APP_URL}?${params.toString()}`;
