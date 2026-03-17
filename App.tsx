@@ -152,7 +152,9 @@ const App: React.FC = () => {
     setAttendance(prev => ({ ...prev, [name]: value }));
   };
 
-  const hasInput = income.baseSalary !== '' && Number(income.baseSalary) !== 0;
+  const hasInput = 
+    income.baseSalary !== '' && Number(income.baseSalary) !== 0 && 
+    income.actualWorkingDays !== '' && Number(income.actualWorkingDays) !== 0;
 
   const handleDownloadExcel = () => {
     exportToExcel(
