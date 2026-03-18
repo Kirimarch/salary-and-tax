@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini API Dashboard | Tier 1 Status</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Noto+Sans+Thai:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent: #10b981;
+            --warning: #f59e0b;
+            --text: #f8fafc;
+        }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.1) 0, transparent 50%);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            padding: 40px 20px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .tier-badge {
+            display: inline-block;
+            padding: 8px 24px;
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: #451a03;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.2);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin: 0;
+            background: linear-gradient(to right, #818cf8, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .summary-bar {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .summary-item { text-align: center; }
+        .summary-label { display: block; font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; margin-bottom: 5px; }
+        .summary-value { font-size: 1.3rem; font-weight: 700; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            padding: 28px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .price-section {
+            margin-top: 20px;
+            padding: 18px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .price-label { font-size: 0.75rem; color: #94a3b8; }
+        .price-tag { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+        .price-usd { font-size: 0.65rem; color: #64748b; margin-top: 2px; }
+
+        .stats {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-label { font-size: 0.65rem; color: #64748b; display: block; margin-bottom: 4px; }
+        .stat-value { font-size: 0.9rem; font-weight: 600; }
+
+        #loading { text-align: center; font-size: 1.2rem; color: #94a3b8; padding: 50px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="tier-badge">TIER 1 (PAY-AS-YOU-GO) ACTIVE</div>
+            <h1>Live Gemini Tier 1 Engine</h1>
+            <p style="color: #94a3b8;">วิเคราะห์ค่าใช้จ่ายจริงเป็นบาทไทย (THB) ของ API Key ของคุณ</p>
+        </header>
+
+        <div class="summary-bar">
+            <div class="summary-item">
+                <span class="summary-label">Exchange Rate</span>
+                <span class="summary-value">฿36.20 / USD</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Key Security</span>
+                <span class="summary-value" style="color: var(--accent);">Encrypted</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Billing Status</span>
+                <span class="summary-value" style="color: var(--warning);">Usage-Based</span>
+            </div>
+        </div>
+
+        <div id="loading">กวาดข้อมูลโมเดลจาก Google...</div>
+        <div id="model-grid" class="grid"></div>
+
+        <p style="text-align: center; color: #475569; font-size: 0.75rem; margin-top: 40px;">
+            * ราคาคำนวณตาม Tier 1 ของ Google Cloud (Pay-as-you-go)<br>
+            * RPM = Requests Per Minute | TPM = Tokens Per Minute
+        </p>
+    </div>
+
+    <script>
+        const API_KEY = "AIzaSyCFIHwHwE4fsMKrvh3ZPdVHXhGMdYLfwKw";
+        const THB_RATE = 36.20;
+        
+        // ข้อมูลราคาต่อ 1M Tokens (Tier 1)
+        const PRICING_DATA = {
+            "flash": { in: 0.075, out: 0.30, rpm: 2000 },
+            "pro": { in: 3.50, out: 10.50, rpm: 360 },
+            "default": { in: 0.50, out: 1.50, rpm: 360 }
+        };
+
+        async function fetchModels() {
+            try {
+                const response = await axios.get(`https://generativelanguage.googleapis.com/v1beta/models?key=${API_KEY}`);
+                const models = response.data.models;
+                const grid = document.getElementById('model-grid');
+                document.getElementById('loading').style.display = 'none';
+
+                models.forEach(model => {
+                    const name = model.name.toLowerCase();
+                    const p = name.includes('flash') ? PRICING_DATA.flash : (name.includes('pro') ? PRICING_DATA.pro : PRICING_DATA.default);
+
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <div style="margin-bottom: 20px;">
+                            <span style="font-size: 1.3rem; font-weight: 700; color: white;">${model.displayName}</span>
+                            <div style="font-size: 0.7rem; color: #475569; font-family: monospace; margin-top: 4px;">${model.name}</div>
+                        </div>
+
+                        <div class="price-section">
+                            <div class="price-row">
+                                <span class="price-label">Input (1M Tokens)</span>
+                                <div style="text-align: right;">
+                                    <span class="price-tag">฿${(p.in * THB_RATE).toFixed(2)}</span>
+                                    <div class="price-usd">$${p.in.toFixed(3)}</div>
+                                </div>
+                            </div>
+                            <div class="price-row" style="margin-top: 15px;">
+                                <span class="price-label">Output (1M Tokens)</span>
+                                <div style="text-align: right;">
+                                    <span class="price-tag" style="color: var(--primary-light);">฿${(p.out * THB_RATE).toFixed(2)}</span>
+                                    <div class="price-usd">$${p.out.toFixed(2)}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stats">
+                            <div class="stat-box">
+                                <span class="stat-label">MAX RPM (TIER 1)</span>
+                                <span class="stat-value" style="color: var(--warning);">${p.rpm.toLocaleString()}</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-label">CONTEXT WINDOW</span>
+                                <span class="stat-value">${(model.inputTokenLimit / 1000000).toFixed(1)}M</span>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (error) {
+                document.getElementById('loading').innerHTML = `<span style="color: #ef4444;">Error: ${error.message}</span>`;
+            }
+        }
+
+        fetchModels();
+    </script>
+</body>
+</html>
