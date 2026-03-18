@@ -145,7 +145,17 @@ const App: React.FC = () => {
   }, [income, attendance, deduction]);
 
   const handleIncomeChange = (name: string, value: number | '') => {
-    setIncome(prev => ({ ...prev, [name]: value }));
+    let finalValue = value;
+    
+    // Limit OT hours to maximum 24 hours * 26 days = 624
+    if (name === 'otHours' && value !== '') {
+      const maxOt = 24 * 26;
+      if (Number(value) > maxOt) {
+        finalValue = maxOt;
+      }
+    }
+
+    setIncome(prev => ({ ...prev, [name]: finalValue }));
   };
 
   const handleAttendanceChange = (name: string, value: number | '') => {
