@@ -40,7 +40,7 @@ const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-fl
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
           temperature: 0.7, // ความฉลาดแบบ "ตอบทันที" ไม่ต้องคิดสร้างสรรค์มาก
-          maxOutputTokens: 1024, // กระชับเนื้อหาเพื่อลดเวลาส่งข้อมูล
+          maxOutputTokens: 5048, // กระชับเนื้อหาเพื่อลดเวลาส่งข้อมูล
           topP: 0.95,
           topK: 40
         }
