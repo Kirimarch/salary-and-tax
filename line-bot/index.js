@@ -79,7 +79,7 @@ async function handleEvent(event) {
 
    try {
      const model = genAI.getGenerativeModel({ 
-       model: "gemini-1.5-flash-latest", // แก้ชื่อรุ่นให้ถูกต้องสำหรับ SDK 
+       model: "gemini-1.5-flash", // ใช้รุ่นมาตรฐานที่สุดที่ Tier 1 รองรับแน่นอน
        generationConfig: {
          temperature: 0.1, 
          maxOutputTokens: 500, 
