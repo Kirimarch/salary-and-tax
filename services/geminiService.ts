@@ -29,8 +29,8 @@ export const getFinancialAdvice = async (
     จัดรูปแบบเป็น Bullet points ที่อ่านง่าย และให้กำลังใจ
   `;
 
-  // เลือกใช้รุ่นที่ตรงตามรายชื่อที่ Key นี้รองรับแน่นอน (Gemini Flash Latest)
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  // เปลี่ยนจาก gemini-1.5-flash เป็นโมเดลปัจจุบัน เช่น gemini-3-flash-preview หรือ gemini-2.5-flash
+const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
   try {
     const response = await fetch(url, {
