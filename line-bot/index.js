@@ -79,11 +79,11 @@ async function handleEvent(event) {
 
    try {
      const model = genAI.getGenerativeModel({ 
-       model: "gemini-1.5-flash", // ใช้รุ่นระบุเวอร์ชันเพื่อความเสถียร
+       model: "gemini-1.5-flash-latest", // แก้ชื่อรุ่นให้ถูกต้องสำหรับ SDK 
        generationConfig: {
-         temperature: 0.1, // เน้นความไวและแม่นยำที่สุด
-         maxOutputTokens: 500, // จำกัด Token เพื่อให้ส่งผลลัพธ์กลับมาไวขึ้น
-         responseMimeType: "application/json" // สั่งให้ส่งกลับเป็น JSON โดยตรง (ลดเวลา Parse)
+         temperature: 0.1, 
+         maxOutputTokens: 500, 
+         responseMimeType: "application/json" 
        }
      });
 
