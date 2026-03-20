@@ -77,25 +77,26 @@ async function handleEvent(event) {
 
   const userText = event.message.text;
 
-  try {
-     const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+   try {
+     const model = genAI.getGenerativeModel({ 
+       model: "gemini-1.5-flash", // ใช้รุ่นระบุเวอร์ชันเพื่อความเสถียร
+       generationConfig: {
+         temperature: 0.1, // เน้นความไวและแม่นยำที่สุด
+         maxOutputTokens: 500, // จำกัด Token เพื่อให้ส่งผลลัพธ์กลับมาไวขึ้น
+         responseMimeType: "application/json" // สั่งให้ส่งกลับเป็น JSON โดยตรง (ลดเวลา Parse)
+       }
+     });
+
      const prompt = promptTemplate.replace('{MESSAGE}', userText);
      const result = await model.generateContent(prompt);
      const responseText = result.response.text().trim();
      
-     // Remove markdown formatting if any
-     let jsonString = responseText;
-     if (jsonString.startsWith('```json')) {
-         jsonString = jsonString.replace(/```json/g, '').replace(/```/g, '').trim();
-     } else if (jsonString.startsWith('```')) {
-         jsonString = jsonString.replace(/```/g, '').trim();
-     }
-
      let aiResponse;
      try {
-         aiResponse = JSON.parse(jsonString);
+         aiResponse = JSON.parse(responseText);
      } catch (e) {
-         console.log("Failed to parse JSON: ", jsonString);
+         console.log("Failed to parse JSON: ", responseText);
+         // Fallback if AI didn't return clean JSON
          return replyText(event.replyToken, 'ขออภัย ระบบไม่เข้าใจโปรดลองใหม่อีกครั้ง หรือพิมพ์ "สอนหน่อย" เพื่อดูวิธีใช้ครับ');
      }
 

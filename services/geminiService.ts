@@ -30,7 +30,7 @@ export const getFinancialAdvice = async (
   `;
 
   // เลือกใช้รุ่นที่ตรงตามรายชื่อที่ Key นี้รองรับแน่นอน (Gemini Flash Latest)
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
   try {
     const response = await fetch(url, {
@@ -39,9 +39,10 @@ export const getFinancialAdvice = async (
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 2048,
-          topP: 0.95
+          temperature: 0.2, // ความฉลาดแบบ "ตอบทันที" ไม่ต้องคิดสร้างสรรค์มาก
+          maxOutputTokens: 512, // กระชับเนื้อหาเพื่อลดเวลาส่งข้อมูล
+          topP: 0.8,
+          topK: 40
         }
       })
     });
