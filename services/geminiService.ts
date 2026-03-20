@@ -29,7 +29,7 @@ export const getFinancialAdvice = async (
     จัดรูปแบบเป็น Bullet points ที่อ่านง่าย และให้กำลังใจ
   `;
 
-  // เปลี่ยนจาก gemini-1.5-flash เป็นโมเดลปัจจุบัน เช่น gemini-3-flash-preview หรือ gemini-2.5-flash
+  
 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
   try {
