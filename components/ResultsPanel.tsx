@@ -55,19 +55,19 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
             
             <div className="py-2">
               <p className="text-indigo-300/60 text-[10px] font-bold uppercase mb-1">ยอดเงินเดือนสุทธิที่ได้รับ</p>
-              <h3 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 break-all leading-[1.1]">
+              <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 leading-[1.1] transition-all duration-300">
                 {hasInput ? formatCurrency(result.monthlyNet) : formatCurrency(0)}
               </h3>
             </div>
 
              <div className="flex flex-wrap gap-2 md:gap-3">
-                <div className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-[10px] font-bold backdrop-blur-md flex items-center gap-2 max-w-full">
+                <div className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-[10px] font-bold backdrop-blur-md flex items-center gap-2 max-w-full whitespace-nowrap">
                   <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0"></span>
-                  <span className="truncate">หักประกันสังคม {formatCurrency(result.monthlySSO)}</span>
+                  <span>หักประกันสังคม {formatCurrency(result.monthlySSO)}</span>
                 </div>
-                <div className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-[10px] font-bold backdrop-blur-md flex items-center gap-2 max-w-full">
+                <div className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-[10px] font-bold backdrop-blur-md flex items-center gap-2 max-w-full whitespace-nowrap">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0"></span>
-                  <span className="truncate">หักภาษี {formatCurrency(result.monthlyTax)}</span>
+                  <span>หักภาษี {formatCurrency(result.monthlyTax)}</span>
                 </div>
              </div>
           </div>
@@ -76,13 +76,13 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
             <div className="space-y-6 min-w-0">
               <div className="min-w-0">
                 <p className="text-[12px] font-black text-slate-500 uppercase tracking-widest mb-1">รายได้เฉลี่ยต่อวัน</p>
-                <p className="text-xl md:text-2xl lg:text-3xl font-black text-white break-all leading-tight">
+                <p className="text-xl md:text-2xl lg:text-3xl font-black text-white leading-tight">
                   {hasInput ? formatCurrency(result.dailyRate) : formatCurrency(0)}
                 </p>
               </div>
               <div className="pt-5 border-t border-white/5 min-w-0">
                 <p className="text-[12px] font-black text-slate-500 uppercase tracking-widest mb-1">ฐานหักรายนาที</p>
-                <p className="text-base md:text-lg lg:text-xl font-bold text-indigo-300 break-all">฿{hasInput ? result.minuteRate.toFixed(2) : "0.00"}</p>
+                <p className="text-base md:text-lg lg:text-xl font-bold text-indigo-300">฿{hasInput ? result.minuteRate.toFixed(2) : "0.00"}</p>
               </div>
             </div>
           </div>

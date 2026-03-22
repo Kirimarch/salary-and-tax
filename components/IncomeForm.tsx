@@ -28,7 +28,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({
             onChange={handleIncomeChange}
             placeholder="เช่น 27000"
             labelClass={labelClass}
-            className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-[1.25rem] focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white outline-none text-2xl md:text-3xl font-black text-slate-900 transition-all placeholder:text-slate-200 overflow-hidden text-ellipsis"
+            className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-[1.25rem] focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white outline-none text-2xl md:text-3xl font-black text-slate-900 transition-all placeholder:text-slate-200"
           />
         </div>
         
