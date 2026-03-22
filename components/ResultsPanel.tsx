@@ -39,7 +39,7 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
     <div className="xl:col-span-7 space-y-6">
       
       {/* Main Net Dashboard */}
-      <div className="bg-gradient-to-br from-slate-900 via-[#1E293B] to-slate-900 rounded-[2rem] shadow-2xl p-7 md:p-10 text-white relative overflow-hidden border border-white/5">
+      <div className="bg-gradient-to-br from-slate-900 via-[#1E293B] to-slate-900 rounded-[2rem] shadow-2xl p-7 md:p-10 text-white relative overflow-hidden border border-white/5 [container-type:inline-size]">
         <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full -mr-32 -mt-32 blur-[100px]"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/5 rounded-full -ml-20 -mb-20 blur-[80px]"></div>
         
@@ -53,11 +53,11 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
                </h2>
             </div>
             
-            <div className="py-2">
-              <p className="text-indigo-300/60 text-[10px] font-bold uppercase mb-1">ยอดเงินเดือนสุทธิที่ได้รับ</p>
-              <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 leading-[1.1] transition-all duration-300">
+            <div className="py-2 overflow-hidden">
+               <p className="text-indigo-300/60 text-[10px] font-bold uppercase mb-1">ยอดเงินเดือนสุทธิที่ได้รับ</p>
+               <h3 className="text-[clamp(1.5rem,10cqw,4.5rem)] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 leading-[1.1] transition-all duration-300 whitespace-nowrap">
                 {hasInput ? formatCurrency(result.monthlyNet) : formatCurrency(0)}
-              </h3>
+               </h3>
             </div>
 
              <div className="flex flex-wrap gap-2 md:gap-3">
@@ -72,17 +72,17 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
              </div>
           </div>
 
-           <div className="bg-white/[0.03] border border-white/10 backdrop-blur-xl p-6 md:p-8 rounded-[2rem] w-full lg:w-auto min-w-0 lg:min-w-[240px] shadow-inner">
+           <div className="bg-white/[0.03] border border-white/10 backdrop-blur-xl p-6 md:p-8 rounded-[2rem] w-full lg:w-auto min-w-0 lg:max-w-[30%] lg:min-w-[200px] shadow-inner">
             <div className="space-y-6 min-w-0">
               <div className="min-w-0">
-                <p className="text-[12px] font-black text-slate-500 uppercase tracking-widest mb-1">รายได้เฉลี่ยต่อวัน</p>
-                <p className="text-xl md:text-2xl lg:text-3xl font-black text-white leading-tight">
+                <p className="text-[10px] md:text-[12px] font-black text-slate-500 uppercase tracking-widest mb-1">รายได้เฉลี่ยต่อวัน</p>
+                <p className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-black text-white leading-tight break-words">
                   {hasInput ? formatCurrency(result.dailyRate) : formatCurrency(0)}
                 </p>
               </div>
               <div className="pt-5 border-t border-white/5 min-w-0">
-                <p className="text-[12px] font-black text-slate-500 uppercase tracking-widest mb-1">ฐานหักรายนาที</p>
-                <p className="text-base md:text-lg lg:text-xl font-bold text-indigo-300">฿{hasInput ? result.minuteRate.toFixed(2) : "0.00"}</p>
+                <p className="text-[10px] md:text-[12px] font-black text-slate-500 uppercase tracking-widest mb-1">ฐานหักรายนาที</p>
+                <p className="text-sm md:text-base lg:text-lg xl:text-xl font-bold text-indigo-300 break-words">฿{hasInput ? result.minuteRate.toFixed(2) : "0.00"}</p>
               </div>
             </div>
           </div>
