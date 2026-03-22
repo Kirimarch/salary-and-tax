@@ -20,7 +20,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({
         <i className="fas fa-money-check-alt text-indigo-500"></i> ข้อมูลรายได้ (Income)
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
-        <div className="sm:col-span-2">
+        <div className="sm:col-span-2 min-w-0">
           <NumericInput
             label="เงินเดือนพื้นฐาน (Base Salary)"
             name="baseSalary"
@@ -28,7 +28,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({
             onChange={handleIncomeChange}
             placeholder="เช่น 27000"
             labelClass={labelClass}
-            className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-[1.25rem] focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white outline-none text-2xl md:text-3xl font-black text-slate-900 transition-all placeholder:text-slate-200"
+            className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-[1.25rem] focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white outline-none text-2xl md:text-3xl font-black text-slate-900 transition-all placeholder:text-slate-200 overflow-hidden text-ellipsis"
           />
         </div>
         

@@ -47,7 +47,7 @@ const NumericInput: React.FC<NumericInputProps> = ({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full min-w-0">
       {label && <label className={labelClass}>{label}</label>}
       <div className="relative">
         <input
