@@ -94,10 +94,12 @@ async function handleEvent(event) {
      
      let aiResponse;
      try {
-         aiResponse = JSON.parse(responseText);
+         // ใช้ Regex เพื่อควักเฉพาะก้อน JSON ออกมา (ป้องกันกรณี AI พิมพ์ข้อความแถม)
+         const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+         const jsonString = jsonMatch ? jsonMatch[0] : responseText;
+         aiResponse = JSON.parse(jsonString);
      } catch (e) {
          console.log("Failed to parse JSON: ", responseText);
-         // Fallback if AI didn't return clean JSON
          return replyText(event.replyToken, 'ขออภัย ระบบไม่เข้าใจโปรดลองใหม่อีกครั้ง หรือพิมพ์ "สอนหน่อย" เพื่อดูวิธีใช้ครับ');
      }
 
