@@ -83,7 +83,7 @@ async function handleEvent(event) {
 
    try {
      const model = genAI.getGenerativeModel({ 
-       model: "gemini-1.5-flash-8b", 
+       model: "gemini-2.5-flash", // ตัวที่เร็วที่สุดในตระกูล 1.5 (8B parameters)
        generationConfig: {
          temperature: 0.8, // เพิ่มความหลากหลายในการตอบโต้
          maxOutputTokens: 500, 
