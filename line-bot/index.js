@@ -79,16 +79,14 @@ async function handleEvent(event) {
 
    try {
      const model = genAI.getGenerativeModel({ 
-
-       model: "gemini-2.5-flash",
+       model: "gemini-2.5-flash", 
        generationConfig: {
          temperature: 0.7, 
-         maxOutputTokens: 500, 
-         responseMimeType: "application/json" 
+         maxOutputTokens: 1000
        }
      });
 
-     const prompt = promptTemplate.replace('{MESSAGE}', userText);
+     const prompt = `${promptTemplate}\n**สำคัญ**: ตอบสั้นที่สุด ห้ามบรรยาย\nข้อความจากผู้ใช้: "${userText}"`;
      const result = await model.generateContent(prompt);
      const responseText = result.response.text().trim();
      
