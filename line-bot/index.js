@@ -21,7 +21,8 @@ const promptTemplate = `
 
 หน้าที่ของคุณ:
 1. วิเคราะห์ความต้องการของผู้ใช้และดึงข้อมูลใส่ JSON
-2. ให้คำแนะนำหรือพูดคุยอย่างมีความหลากหลาย ไม่ตอบซ้ำซาก
+2. ให้คำแนะนำหรือพูดคุยอย่างมีความหลากหลายในฟิลด์ "text"
+3. **สำคัญมาก**: ห้ามตอบข้อความอื่นๆ นอกเหนือจาก JSON Object เท่านั้น ห้ามมีบทสนทนานำหรือตามหลังเด็ดขาด
 
 ให้ตอบกลับเป็น JSON Object เท่านั้น โดยมีโครงสร้างดังนี้:
 {
@@ -85,7 +86,7 @@ async function handleEvent(event) {
      const model = genAI.getGenerativeModel({ 
        model: "gemini-2.5-flash", // ตัวที่เร็วที่สุดในตระกูล 1.5 (8B parameters)
        generationConfig: {
-         temperature: 0.8, // เพิ่มความหลากหลายในการตอบโต้
+         temperature: 0.4, // พอดีๆ ไม่เพ้อเจ้อจนทำ JSON พัง
          maxOutputTokens: 500, 
          responseMimeType: "application/json" 
        }
@@ -97,11 +98,13 @@ async function handleEvent(event) {
      
      let aiResponse;
      try {
-         aiResponse = JSON.parse(responseText);
+         // เพิ่มความสามารถในการแกะ JSON แม้มีข้อความอื่นแถมมา (Robust JSON Extraction)
+         const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+         const jsonString = jsonMatch ? jsonMatch[0] : responseText;
+         aiResponse = JSON.parse(jsonString);
      } catch (e) {
          console.log("Failed to parse JSON: ", responseText);
-         // Fallback if AI didn't return clean JSON
-         return replyText(event.replyToken, 'ขออภัย ระบบไม่เข้าใจโปรดลองใหม่อีกครั้ง หรือพิมพ์ "สอนหน่อย" เพื่อดูวิธีใช้ครับ');
+         return replyText(event.replyToken, 'ขออภัยครับ เจ้าหน้าที่พอลไม่เข้าใจข้อมูลนี้ รบกวนแจ้งอีกครั้งนะครับ หรือพิมพ์ "สอนหน่อย" ครับ');
      }
 
      // ถ้าเป็นกรณี Greeting หรือ Help ให้ตอบเป็นข้อความ Text ปกติ
