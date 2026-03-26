@@ -141,28 +141,30 @@ async function handleEvent(event) {
          body: {
            type: "box",
            layout: "vertical",
-           contents: Object.keys(data).map(key => ({
-             type: "box",
-             layout: "horizontal",
-             contents: [
-               {
-                 type: "text",
-                 text: key.toUpperCase(),
-                 size: "sm",
-                 color: "#888888",
-                 flex: 4
-               },
-               {
-                 type: "text",
-                 text: `${data[key]}`,
-                 size: "sm",
-                 color: "#111111",
-                 align: "end",
-                 weight: "bold",
-                 flex: 6
-               }
-             ]
-           }))
+           contents: Object.keys(data)
+             .filter(key => data[key] !== undefined && data[key] !== null && data[key] !== "" && data[key] !== 0) // กรองค่าว่างและค่าที่เป็น 0 ออก
+             .map(key => ({
+               type: "box",
+               layout: "horizontal",
+               contents: [
+                 {
+                   type: "text",
+                   text: key.toUpperCase(),
+                   size: "sm",
+                   color: "#888888",
+                   flex: 4
+                 },
+                 {
+                   type: "text",
+                   text: String(data[key]), // แปลงเป็น String เสมอ
+                   size: "sm",
+                   color: "#111111",
+                   align: "end",
+                   weight: "bold",
+                   flex: 6
+                 }
+               ]
+             }))
          },
          footer: {
            type: "box",
