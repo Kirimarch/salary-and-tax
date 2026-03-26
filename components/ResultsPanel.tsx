@@ -72,17 +72,17 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
              </div>
           </div>
 
-           <div className="bg-white/[0.03] border border-white/10 backdrop-blur-xl p-6 md:p-8 rounded-[2rem] w-full lg:w-auto min-w-0 lg:max-w-[30%] lg:min-w-[200px] shadow-inner">
+           <div className="bg-white/[0.03] border border-white/10 backdrop-blur-xl p-6 md:p-8 rounded-[2rem] w-full lg:w-auto min-w-0 lg:max-w-fit lg:min-w-[220px] shadow-inner flex-shrink-0">
             <div className="space-y-6 min-w-0">
               <div className="min-w-0">
                 <p className="text-[10px] md:text-[12px] font-black text-slate-500 uppercase tracking-widest mb-1">รายได้เฉลี่ยต่อวัน</p>
-                <p className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-black text-white leading-tight break-words">
+                <p className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-black text-white leading-tight whitespace-nowrap">
                   {hasInput ? formatCurrency(result.dailyRate) : formatCurrency(0)}
                 </p>
               </div>
               <div className="pt-5 border-t border-white/5 min-w-0">
                 <p className="text-[10px] md:text-[12px] font-black text-slate-500 uppercase tracking-widest mb-1">ฐานหักรายนาที</p>
-                <p className="text-sm md:text-base lg:text-lg xl:text-xl font-bold text-indigo-300 break-words">฿{hasInput ? result.minuteRate.toFixed(2) : "0.00"}</p>
+                <p className="text-sm md:text-base lg:text-lg xl:text-xl font-bold text-indigo-300 whitespace-nowrap">฿{hasInput ? result.minuteRate.toFixed(2) : "0.00"}</p>
               </div>
             </div>
           </div>
@@ -100,27 +100,27 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
               <tbody className="divide-y divide-slate-100">
                 <tr className="hover:bg-slate-50 transition-colors">
                   <td className="py-3 md:py-4 px-4 md:px-6 text-slate-600 font-medium min-w-[140px]">เงินเดือนพื้นฐาน + ค่าตำแหน่ง</td>
-                  <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-slate-800 break-all">{formatCurrency(result.grossSalary)}</td>
+                  <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-slate-800 whitespace-nowrap">{formatCurrency(result.grossSalary)}</td>
                 </tr>
                 <tr className="hover:bg-slate-50 transition-colors">
                   <td className="py-3 md:py-4 px-4 md:px-6 text-slate-600 font-medium min-w-[140px]">ค่าล่วงเวลา (OT)</td>
-                  <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-blue-600 break-all">+{formatCurrency(result.otAmount)}</td>
+                  <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-blue-600 whitespace-nowrap">+{formatCurrency(result.otAmount)}</td>
                 </tr>
                 <tr className="hover:bg-slate-50 transition-colors">
                   <td className="py-3 md:py-4 px-4 md:px-6 text-slate-600 font-medium min-w-[140px]">เบี้ยขยัน</td>
-                  <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-green-600 break-all">+{formatCurrency(income.diligenceAllowance)}</td>
+                  <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-green-600 whitespace-nowrap">+{formatCurrency(income.diligenceAllowance)}</td>
                 </tr>
                 
                 {result.autoAbsentDays > 0 && (
                   <tr className="hover:bg-slate-50 transition-colors bg-red-50/20">
                     <td className="py-3 md:py-4 px-4 md:px-6 text-red-600 italic font-medium min-w-[140px]">หักขาดงานอัตโนมัติ ({result.autoAbsentDays} วัน)</td>
-                    <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-red-500 break-all">-{formatCurrency(result.autoAbsentDays * result.dailyRate)}</td>
+                    <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-red-500 whitespace-nowrap">-{formatCurrency(result.autoAbsentDays * result.dailyRate)}</td>
                   </tr>
                 )}
 
                 <tr className="hover:bg-slate-50 transition-colors bg-red-50/20">
                   <td className="py-3 md:py-4 px-4 md:px-6 text-red-600 italic font-medium min-w-[140px]">หักวันขาดงาน / ลากิจ</td>
-                  <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-red-500 break-all">
+                  <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-red-500 whitespace-nowrap">
                     -{formatCurrency(result.leaveDeductions + (attendance.absentDays * result.dailyRate))}
                   </td>
                 </tr>
@@ -128,24 +128,24 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
                 {result.maternityDeduction > 0 && (
                   <tr className="hover:bg-slate-50 transition-colors bg-red-50/20">
                     <td className="py-3 md:py-4 px-4 md:px-6 text-red-600 italic font-medium min-w-[140px]">หักลาคลอด (ส่วนเกิน 45 วัน)</td>
-                    <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-red-500 break-all">-{formatCurrency(result.maternityDeduction)}</td>
+                    <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-red-500 whitespace-nowrap">-{formatCurrency(result.maternityDeduction)}</td>
                   </tr>
                 )}
 
                 {result.trainingDeduction > 0 && (
                   <tr className="hover:bg-slate-50 transition-colors bg-red-50/20">
                     <td className="py-3 md:py-4 px-4 md:px-6 text-red-600 italic font-medium min-w-[140px]">หักลาฝึกอบรม (ส่วนเกิน 5 วัน)</td>
-                    <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-red-500 break-all">-{formatCurrency(result.trainingDeduction)}</td>
+                    <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-red-500 whitespace-nowrap">-{formatCurrency(result.trainingDeduction)}</td>
                   </tr>
                 )}
 
                 <tr className="hover:bg-slate-50 transition-colors bg-red-50/20">
                   <td className="py-3 md:py-4 px-4 md:px-6 text-red-600 italic font-medium min-w-[140px]">หักมาสาย {attendance.lateMinutes || 0} นาที</td>
-                  <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-red-500 break-all">-{formatCurrency(result.lateDeduction)}</td>
+                  <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-red-500 whitespace-nowrap">-{formatCurrency(result.lateDeduction)}</td>
                 </tr>
                 <tr className="bg-indigo-50/50">
                   <td className="py-4 md:py-5 px-4 md:px-6 font-black text-indigo-900 text-sm md:text-base min-w-[140px]">ฐานรายได้สุทธิก่อนภาษี</td>
-                  <td className="py-4 md:py-5 px-4 md:px-6 text-right font-black text-indigo-900 text-sm md:text-base underline decoration-indigo-200 underline-offset-4 break-all">
+                  <td className="py-4 md:py-5 px-4 md:px-6 text-right font-black text-indigo-900 text-sm md:text-base underline decoration-indigo-200 underline-offset-4 whitespace-nowrap">
                     {formatCurrency(result.monthlyGrossAfterDeductions)}
                   </td>
                 </tr>
