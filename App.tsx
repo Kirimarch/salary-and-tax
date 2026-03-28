@@ -19,6 +19,8 @@ import AIAdvisor from './components/AIAdvisor';
 // Assets
 // @ts-ignore
 import logo from './components/images/AW-EnterPriseNetwork-logo.png';
+// @ts-ignore
+import qrCodeImg from './components/images/M_gainfriends_2dbarcodes_GW.png';
 
 const initialIncome: IncomeData = {
   baseSalary: 0,
@@ -63,6 +65,8 @@ const App: React.FC = () => {
     const saved = localStorage.getItem('payroll_attendance');
     return saved ? JSON.parse(saved) : initialAttendance;
   });
+
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
   // URL Parameter Detection for LINE Bot Integration
   useEffect(() => {
@@ -284,6 +288,55 @@ const App: React.FC = () => {
           หมายเหตุ: การคำนวณวันขาดงานอัตโนมัติอ้างอิงจากฐาน 26 วันต่อเดือนตามมาตรฐานสากล ผลลัพธ์อาจแตกต่างกันไปตามนโยบายบริษัท
         </p>
       </footer>
+
+      {/* Floating Action Button (LINE Bot) */}
+      <button
+        onClick={() => setIsQrModalOpen(true)}
+        className="fixed bottom-6 right-6 w-14 h-14 bg-[#00B900] hover:bg-[#009b00] rounded-full flex items-center justify-center text-white shadow-lg shadow-green-200/50 hover:scale-110 active:scale-95 transition-all z-40 group"
+        title="แอดไลน์เพื่อให้ AI ช่วยคำนวณ"
+      >
+        <i className="fab fa-line text-[32px] group-hover:scale-110 transition-transform"></i>
+      </button>
+
+      {/* QR Code Modal Overlay */}
+      {isQrModalOpen && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 transition-all duration-300"
+          onClick={() => setIsQrModalOpen(false)}
+        >
+          <div 
+            className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative flex flex-col items-center animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button 
+              onClick={() => setIsQrModalOpen(false)}
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 transition-colors"
+            >
+              <i className="fas fa-times"></i>
+            </button>
+            
+            <div className="w-16 h-16 bg-[#00B900]/10 rounded-2xl flex items-center justify-center text-[#00B900] mb-4">
+              <i className="fab fa-line text-4xl"></i>
+            </div>
+            
+            <h3 className="text-xl font-black text-slate-800 mb-1">เจ้าหน้าที่พอล (HR Bot)</h3>
+            <p className="text-xs text-slate-500 font-medium mb-6 text-center leading-relaxed">
+              สแกน QR Code นี้ผ่านไลน์ เพื่อให้เจ้าหน้าที่พอลช่วยคำนวณเงินเดือนให้แบบรวดเร็วและเป็นกันเองทันที!
+            </p>
+            
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 w-full flex justify-center shadow-inner mb-6">
+              <img src={qrCodeImg} alt="LINE Bot QR Code" className="w-48 h-48 object-contain rounded-xl mix-blend-multiply" />
+            </div>
+            
+            <button 
+              onClick={() => setIsQrModalOpen(false)}
+              className="w-full bg-slate-800 hover:bg-slate-900 text-white py-3 rounded-xl text-sm font-bold shadow-md transition-all active:scale-95"
+            >
+              ปิดหน้าต่าง
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
