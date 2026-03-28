@@ -149,6 +149,28 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
                     {formatCurrency(result.monthlyGrossAfterDeductions)}
                   </td>
                 </tr>
+                
+                {/* Additional Deductions */}
+                {result.monthlySSO > 0 && (
+                  <tr className="hover:bg-slate-50 transition-colors bg-slate-50/50">
+                    <td className="py-3 md:py-4 px-4 md:px-6 text-slate-600 font-medium min-w-[140px]">หักประกันสังคม (SSO)</td>
+                    <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-orange-500 whitespace-nowrap">-{formatCurrency(result.monthlySSO)}</td>
+                  </tr>
+                )}
+                {result.monthlyTax > 0 && (
+                  <tr className="hover:bg-slate-50 transition-colors bg-slate-50/50">
+                    <td className="py-3 md:py-4 px-4 md:px-6 text-slate-600 font-medium min-w-[140px]">หักภาษี (Tax)</td>
+                    <td className="py-3 md:py-4 px-4 md:px-6 text-right font-bold text-orange-500 whitespace-nowrap">-{formatCurrency(result.monthlyTax)}</td>
+                  </tr>
+                )}
+                
+                {/* Final Net Pay */}
+                <tr className="bg-[#1E293B]">
+                  <td className="py-4 md:py-5 px-4 md:px-6 font-black text-white text-sm md:text-base min-w-[140px] rounded-bl-xl">ยอดเงินรับสุทธิ (Net Pay)</td>
+                  <td className="py-4 md:py-5 px-4 md:px-6 text-right font-black text-emerald-400 text-lg md:text-xl whitespace-nowrap rounded-br-xl">
+                    {formatCurrency(result.monthlyNet)}
+                  </td>
+                </tr>
               </tbody>
            </table>
          </div>
