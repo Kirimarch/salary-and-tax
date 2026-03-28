@@ -319,9 +319,9 @@ const App: React.FC = () => {
               <i className="fab fa-line text-4xl"></i>
             </div>
             
-            <h3 className="text-xl font-black text-slate-800 mb-1">เจ้าหน้าที่พอล (HR Bot)</h3>
+            <h3 className="text-xl font-black text-slate-800 mb-1"> HR Bot</h3>
             <p className="text-xs text-slate-500 font-medium mb-6 text-center leading-relaxed">
-              สแกน QR Code นี้ผ่านไลน์ เพื่อให้เจ้าหน้าที่พอลช่วยคำนวณเงินเดือนให้แบบรวดเร็วและเป็นกันเองทันที!
+              สแกน QR Code นี้ผ่านไลน์ เพื่อให้ Bot ช่วยคำนวณเงินเดือนให้แบบรวดเร็วและเป็นกันเองทันที!
             </p>
             
             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 w-full flex justify-center shadow-inner mb-6">
